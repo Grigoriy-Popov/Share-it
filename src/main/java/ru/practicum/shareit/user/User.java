@@ -1,18 +1,17 @@
 package ru.practicum.shareit.user;
 
-import lombok.Data;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * // TODO .
  */
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
 public class User {
     private Long id;
-    @NotBlank
     private String name;
-    @Email
     private String email;
 }

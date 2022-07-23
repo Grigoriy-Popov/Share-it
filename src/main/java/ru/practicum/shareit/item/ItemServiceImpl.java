@@ -26,6 +26,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     public ItemDto addItem(ItemDto itemDto, Long userId) {
+        System.out.println(itemDto);
         return toItemDto(itemRepository.addItem(itemDto, userId));
     }
 

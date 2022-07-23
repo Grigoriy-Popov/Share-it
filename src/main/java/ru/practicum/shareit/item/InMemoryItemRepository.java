@@ -15,7 +15,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class InMemoryItemRepository implements ItemRepository {
     private final UserRepository userRepository;
-    private Long id;
+
+    private Long id = 0L;
     private Map<Long, Item> items = new HashMap<>();
 
     @Override
@@ -31,7 +32,7 @@ public class InMemoryItemRepository implements ItemRepository {
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(userRepository.getUserById(userId)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with id %d not found", userId))));
-        item.setRequest(null);
+//        item.setRequest(null);
         items.put(item.getId(), item);
         return item;
     }

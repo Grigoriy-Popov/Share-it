@@ -1,15 +1,23 @@
 package ru.practicum.shareit.user;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Repository
+@Slf4j
 public class InMemoryUserRepository implements UserRepository {
-    private Long id;
+    private Long id = 0L;
     private Map<Long, User> users = new HashMap<>();
+
+    @Override
+    public Collection<User> getAllUsers() {
+        return users.values();
+    }
 
     @Override
     public User addUser(User user) {
@@ -23,7 +31,20 @@ public class InMemoryUserRepository implements UserRepository {
         return Optional.ofNullable(users.get(userId));
     }
 
+    @Override
     public User updateUser(User user) {
+        User repoUser = users.get(user.getId());
+        if (user.getName() != null) {
+            repoUser.setName(user.getName());
+        }
+        if (user.getEmail() != null) {
+            repoUser.setEmail(user.getEmail());
+        }
+        return repoUser;
+    }
 
+    @Override
+    public void deleteUser(Long userId) {
+        users.remove(userId);
     }
 }
