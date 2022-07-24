@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.DuplicateEmailException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
-import ru.practicum.shareit.exceptions.ValidationException;
 
 import java.util.Collection;
 
@@ -16,13 +15,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public Collection<User> getAllUsers() {
-        return userRepository.getAllUsers();
-    }
-
-    @Override
     public User addUser(User user) {
-        validateCreationOfUser(user);
+        checkDuplicateEmail(user);
         return userRepository.addUser(user);
     }
 
@@ -33,11 +27,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User user, Long userId) {
-        getUserById(userId);
+    public Collection<User> getAllUsers() {
+        return userRepository.getAllUsers();
+    }
+
+    @Override
+    public User editUser(User user, Long userId) {
+        getUserById(userId); // Для проверки, что пользователь существует
         checkDuplicateEmail(user);
         user.setId(userId);
-        return userRepository.updateUser(user);
+        return userRepository.editUser(user);
     }
 
     @Override
@@ -45,7 +44,8 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteUser(userId);
     }
 
-    private void validateCreationOfUser(User user) {
+    // оставил пока не разберусь с выводом сообщений при некорректной валидации через аннотации
+/*    private void validateCreationOfUser(User user) {
         if (user.getEmail() == null) {
             log.warn("Failed validation: empty email");
             throw new ValidationException("Email cant be empty");
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
             throw new ValidationException("Invalid email format");
         }
         checkDuplicateEmail(user);
-    }
+    }*/
 
     private void checkDuplicateEmail(User user) {
         if (user.getEmail() != null) {

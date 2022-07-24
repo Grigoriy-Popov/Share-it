@@ -15,11 +15,6 @@ public class InMemoryUserRepository implements UserRepository {
     private Map<Long, User> users = new HashMap<>();
 
     @Override
-    public Collection<User> getAllUsers() {
-        return users.values();
-    }
-
-    @Override
     public User addUser(User user) {
         user.setId(++id);
         users.put(user.getId(), user);
@@ -32,7 +27,12 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public User updateUser(User user) {
+    public Collection<User> getAllUsers() {
+        return users.values();
+    }
+
+    @Override
+    public User editUser(User user) {
         User repoUser = users.get(user.getId());
         if (user.getName() != null) {
             repoUser.setName(user.getName());

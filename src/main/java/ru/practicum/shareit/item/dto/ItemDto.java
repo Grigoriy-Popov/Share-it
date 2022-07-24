@@ -1,30 +1,24 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * // TODO .
- */
-@Data
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+@Getter
+@Setter
 @AllArgsConstructor
 public class ItemDto {
+//
+//    TODO разобраться как нормально обработать ошибки при некорректной валидаии через аннотации
+//
     private Long id;
+    @NotBlank (message = "Name can't be empty")
     private String name;
+    @NotBlank (message = "Description can't be empty")
     private String description;
+    @NotNull
     private Boolean available;
-    private Long requestId;
-
-    public ItemDto(String name, String description, Boolean available, Long requestId) {
-        this.name = name;
-        this.description = description;
-        this.available = available;
-        this.requestId = requestId;
-    }
-
-    public ItemDto(String name, String description, Boolean available) {
-        this.name = name;
-        this.description = description;
-        this.available = available;
-    }
 }

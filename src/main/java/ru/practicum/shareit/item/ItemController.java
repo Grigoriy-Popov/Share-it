@@ -1,27 +1,26 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 
+import javax.validation.Valid;
 import java.util.List;
 
-/**
- * // TODO .
- */
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
+@Slf4j
 public class ItemController {
     private final ItemService itemService;
 
-    @GetMapping
-    public List<ItemDto> getAllUsersItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.getAllUsersItems(userId);
-    }
-
+    /*
+    TODO разобраться как обработать ошибку при отсутствия заголовка
+    */
     @PostMapping
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestBody ItemDto itemDto) {
+    public ItemDto addItem(@Valid @RequestBody ItemDto itemDto,
+                           @RequestHeader("X-Sharer-User-Id") Long userId) {
         return itemService.addItem(itemDto, userId);
     }
 
@@ -30,15 +29,20 @@ public class ItemController {
         return itemService.getItemById(itemId);
     }
 
+    @GetMapping
+    public List<ItemDto> getAllUsersItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemService.getAllUsersItems(userId);
+    }
+
     @PatchMapping("/{itemId}")
-    public ItemDto patch(@RequestHeader("X-Sharer-User-Id") Long userId,
-                         @PathVariable Long itemId,
-                         @RequestBody ItemDto itemDto) {
-            return itemService.updateItem(itemDto, itemId, userId);
+    public ItemDto editItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+                            @PathVariable Long itemId,
+                            @RequestBody ItemDto itemDto) {
+            return itemService.editItem(itemDto, itemId, userId);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchAvailableItems(@RequestParam(required = true) String text) {
+    public List<ItemDto> searchAvailableItems(@RequestParam(defaultValue = "") String text) {
         return itemService.searchAvailableItems(text);
     }
 }

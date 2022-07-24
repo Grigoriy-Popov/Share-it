@@ -1,10 +1,10 @@
-package ru.practicum.shareit;
+package ru.practicum.shareit.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exceptions.*;
 
 
 @RestControllerAdvice
@@ -21,7 +21,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<?> handleUserNotFound(final NotOwnerException e) {
+    public ResponseEntity<?> handleUserNotFound(final UserIsNotOwnerException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
@@ -36,7 +36,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<?> handleThrowable(final Throwable e) {
-        return new ResponseEntity<>("Произошла непредвиденная ошибка.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<?> handleUserNotFound(final MethodArgumentNotValidException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

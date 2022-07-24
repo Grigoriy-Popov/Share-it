@@ -10,13 +10,13 @@ import java.util.Optional;
 @Repository
 public interface ItemRepository {
 
-    List<Item> getAllUsersItems(Long userId);
-
     Item addItem(ItemDto itemDto, Long userId);
 
-    Item updateItem(ItemDto itemDto, Long userId);
-
     Optional<Item> getItemById(Long itemId);
+
+    List<Item> getAllUsersItems(Long userId);
+
+    Item editItem(ItemDto itemDto, Long userId);
 
     List<Item> searchAvailableItems(String text);
 }

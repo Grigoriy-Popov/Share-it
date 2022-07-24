@@ -6,10 +6,10 @@ public class ItemMapper {
 
     public static ItemDto toItemDto(Item item) {
         return new ItemDto(
+                item.getId(),
                 item.getName(),
                 item.getDescription(),
-                item.getIsAvailable(),
-                item.getRequest() != null ? item.getRequest().getId() : null
+                item.getAvailable()
         );
     }
 
@@ -18,9 +18,7 @@ public class ItemMapper {
                 itemDto.getId(),
                 itemDto.getName(),
                 itemDto.getDescription(),
-                itemDto.getAvailable(),
-                null,
-                null
+                itemDto.getAvailable()
         );
     }
 }

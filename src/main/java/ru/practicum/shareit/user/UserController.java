@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
-/**
- * // TODO .
- */
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
@@ -17,14 +15,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public User addUser(@RequestBody User user) {
+    public User addUser(@Valid @RequestBody User user) {
         return userService.addUser(user);
-    }
-
-    @PatchMapping("/{userId}")
-    public User updateUser(@PathVariable Long userId,
-                           @RequestBody User user) {
-        return userService.updateUser(user, userId);
     }
 
     @GetMapping("/{userId}")
@@ -35,6 +27,12 @@ public class UserController {
     @GetMapping
     public Collection<User> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @PatchMapping("/{userId}")
+    public User editUser(@RequestBody User user,
+                         @PathVariable Long userId) {
+        return userService.editUser(user, userId);
     }
 
     @DeleteMapping("/{userId}")
