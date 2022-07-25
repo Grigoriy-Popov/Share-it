@@ -3,7 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exceptions.ItemOwnerIsNotSetException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -19,7 +19,7 @@ public class ItemController {
     public ItemDto addItem(@Valid @RequestBody ItemDto itemDto,
                            @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId) {
         if (userId == null) {
-            throw new NotFoundException("User not specified in request");
+            throw new ItemOwnerIsNotSetException("User not specified in request");
         }
         return itemService.addItem(itemDto, userId);
     }
