@@ -1,31 +1,20 @@
 package ru.practicum.shareit.item;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exceptions.UserNotFoundException;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
-@RequiredArgsConstructor
 @Slf4j
 public class InMemoryItemRepository implements ItemRepository {
-    private final UserRepository userRepository;
-
     private Long id = 0L;
     private Map<Long, Item> items = new HashMap<>();
 
     @Override
-    public Item addItem(ItemDto itemDto, Long userId) {
-        User user = userRepository.getUserById(userId) // для проверки, существует ли владелец вещи
-                .orElseThrow(() -> new UserNotFoundException(String.format("User with id %d not found", userId)));
+    public Item addItem(ItemDto itemDto, User user) {
         itemDto.setId(++id);
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(user);

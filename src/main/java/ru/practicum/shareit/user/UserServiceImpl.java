@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.DuplicateEmailException;
-import ru.practicum.shareit.exceptions.UserNotFoundException;
+import ru.practicum.shareit.exceptions.NotFoundException;
 
 import java.util.Collection;
 
@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long userId) {
         return userRepository.getUserById(userId)
-                .orElseThrow(() -> new UserNotFoundException(String.format("User with id %d not found", userId)));
+                .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", userId)));
     }
 
     @Override

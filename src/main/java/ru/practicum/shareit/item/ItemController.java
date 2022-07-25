@@ -3,7 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.exceptions.NotFoundException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -15,12 +15,12 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
-    /*
-    TODO разобраться как обработать ошибку при отсутствия заголовка
-    */
     @PostMapping
     public ItemDto addItem(@Valid @RequestBody ItemDto itemDto,
-                           @RequestHeader("X-Sharer-User-Id") Long userId) {
+                           @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId) {
+        if (userId == null) {
+            throw new NotFoundException("User not specified in request");
+        }
         return itemService.addItem(itemDto, userId);
     }
 

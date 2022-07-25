@@ -3,31 +3,32 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.ItemNotFoundException;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.UserIsNotOwnerException;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.item.dto.ItemMapper.toItemDto;
+import static ru.practicum.shareit.item.ItemMapper.toItemDto;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
+    private final UserService userService;
 
     public ItemDto addItem(ItemDto itemDto, Long userId) {
-        return toItemDto(itemRepository.addItem(itemDto, userId));
+        User user = userService.getUserById(userId); // Для проверки существует ли владелец вещи
+        return toItemDto(itemRepository.addItem(itemDto, user));
     }
 
     @Override
     public ItemDto getItemById(Long itemId) {
         return toItemDto(itemRepository.getItemById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException(String.format("Item with id %d not found", itemId))));
+                .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", itemId))));
     }
 
     @Override
@@ -40,7 +41,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto editItem(ItemDto itemDto, Long itemId, Long userId) {
         Item item = itemRepository.getItemById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException(String.format("Item with id %d not found", itemId)));
+                .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", itemId)));
         if (item.getOwner().getId().equals(userId)) {
             return toItemDto(itemRepository.editItem(itemDto, itemId));
         } else {
