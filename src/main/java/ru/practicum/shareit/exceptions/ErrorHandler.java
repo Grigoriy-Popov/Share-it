@@ -4,6 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestControllerAdvice
@@ -28,4 +32,30 @@ public class ErrorHandler {
     public ResponseEntity<?> handleDuplicateEmail(final DuplicateEmailException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleItemIsBooked(final ItemIsBookedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+//    для обработки исключения при передаче параметра state в виде строки
+//    @ExceptionHandler
+//    public ResponseEntity<?> handleWrongArgument(final IncorrectStateException e) {
+//        Map<String,String> resp = new HashMap<>();
+//        resp.put("error", e.getMessage());
+//        return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
+//    }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String,String>> errorHandler(MethodArgumentTypeMismatchException e){
+        Map<String,String> resp = new HashMap<>();
+        resp.put("error", String.format("Unknown %s: %s", e.getName(), e.getValue()));
+        return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleUserHasNotBookedItem(final UserHasNotBookedItem e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }

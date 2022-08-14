@@ -25,8 +25,9 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable Long itemId) {
-        return itemService.getItemById(itemId);
+    public ItemDto getItemById(@PathVariable Long itemId,
+                               @RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemService.getItemById(itemId, userId);
     }
 
     @GetMapping
@@ -44,5 +45,16 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> searchAvailableItems(@RequestParam(defaultValue = "") String text) {
         return itemService.searchAvailableItems(text);
+    }
+
+    @PostMapping("{itemId}/comment")
+    public CommentDto addComment(@Valid @RequestBody CommentDto commentDto,
+                                 @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
+                                 @PathVariable Long itemId) {
+        if (userId == null) {
+            throw new ItemOwnerIsNotSetException("User not specified in request");
+        }
+        Comment comment = CommentMapper.fromDto(commentDto);
+        return CommentMapper.toDto(itemService.addComment(comment, userId, itemId));
     }
 }
