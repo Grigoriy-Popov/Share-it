@@ -88,23 +88,9 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
-    // Не знаю как лучше - делать фильтрацию и сортировку на стороне БД или Java
-    //Пока оставил на стороне БД
+    // Сортировка и фильтрация происходит на стороне БД
     private Item setLastAndNextBooking(Item item) {
         LocalDateTime now = LocalDateTime.now();
-
-//        Для сортировки и фильтрации на стороне Java
-//        List<BookingDto> bookings = bookingRepository.findAllByItem(item);
-//        bookings.stream()
-//                .filter(booking -> booking.getEnd().isBefore(LocalDateTime.now()))
-//                .max(Comparator.comparing(BookingDto::getEnd))
-//                .ifPresent(item::setLastBooking);
-//        bookings.stream()
-//                .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
-//                .min(Comparator.comparing(BookingDto::getStart))
-//                .ifPresent(item::setNextBooking);
-
-        //        Для сортировки и фильтрации на стороне БД
         bookingRepository.getLastItemBooking(item.getId(), now)
                 .ifPresent(booking -> item.setLastBooking(BookingMapper.toItemBookingDto(booking)));
         bookingRepository.getNextItemBooking(item.getId(), now)

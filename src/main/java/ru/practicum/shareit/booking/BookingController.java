@@ -14,56 +14,42 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookingController {
     private final BookingService bookingService;
-    private final BookingMapper bookingMapper;
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
-    public OutputBookingDto addBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public OutputBookingDto addBooking(@RequestHeader(USER_ID_HEADER) Long userId,
                                        @Valid @RequestBody InputBookingDto inputBookingDto) {
-        Booking booking = bookingMapper.fromInputDto(inputBookingDto);
-        return bookingMapper.toOutputDto(bookingService.addBooking(booking, userId));
+        Booking booking = BookingMapper.fromInputDto(inputBookingDto);
+        Long itemId = inputBookingDto.getItemId();
+        return BookingMapper.toOutputDto(bookingService.addBooking(booking, userId, itemId));
     }
 
     @PatchMapping("/{bookingId}")
-    public OutputBookingDto approve(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public OutputBookingDto approve(@RequestHeader(USER_ID_HEADER) Long userId,
                                     @PathVariable Long bookingId,
                                     @RequestParam Boolean approved) {
-        return bookingMapper.toOutputDto(bookingService.approve(userId, bookingId, approved));
+        return BookingMapper.toOutputDto(bookingService.approve(userId, bookingId, approved));
     }
 
     @GetMapping("/{bookingId}")
-    public OutputBookingDto getBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public OutputBookingDto getBooking(@RequestHeader(USER_ID_HEADER) Long userId,
                               @PathVariable Long bookingId) {
-        return bookingMapper.toOutputDto(bookingService.getBooking(userId, bookingId));
+        return BookingMapper.toOutputDto(bookingService.getBooking(userId, bookingId));
     }
-
-    /*Не знаю как лучше - передавать в метод ниже сразу enum и обрабатывать MethodArgumentTypeMismatchException
-    в ErrorHandler или передавать строку и проверять её преобразование в enum*/
-//    @GetMapping
-//    public List<Booking> getAllUsersBookings(
-//            @RequestHeader("X-Sharer-User-Id") Long userId,
-//            @RequestParam(defaultValue = "ALL") String state) {
-//        State enumState;
-//        try {
-//            enumState = State.valueOf(state);
-//        } catch (IllegalArgumentException e) {
-//            throw new IncorrectStateException("Unknown state: " + state);
-//        }
-//        return bookingService.getAllUsersBookings(userId, enumState);
-//    }
 
     @GetMapping
     public List<OutputBookingDto> getAllUsersBookings(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(USER_ID_HEADER) Long userId,
             @RequestParam(defaultValue = "ALL") State state) { // при передаче некорректного параметра state идёт
                                                         // обработка MethodArgumentTypeMismatchException в ErrorHandler
-        return bookingMapper.toOutputDtoList(bookingService.getAllUsersBookings(userId, state));
+        return BookingMapper.toOutputDtoList(bookingService.getAllUsersBookings(userId, state));
     }
 
     @GetMapping("/owner")
     public List<OutputBookingDto> getAllUsersItemsBookings(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(USER_ID_HEADER) Long userId,
             @RequestParam(defaultValue = "ALL") State state) { // при передаче некорректного параметра state идёт
                                                         // обработка MethodArgumentTypeMismatchException в ErrorHandler
-        return bookingMapper.toOutputDtoList(bookingService.getAllUsersItemsBookings(userId, state));
+        return BookingMapper.toOutputDtoList(bookingService.getAllUsersItemsBookings(userId, state));
     }
 }

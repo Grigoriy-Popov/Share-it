@@ -18,20 +18,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
-    private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
 
     @Override
-    public Booking addBooking(Booking booking, Long userId) {
+    public Booking addBooking(Booking booking, Long userId, Long itemId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", userId)));
-        if (!booking.getItem().getAvailable()) {
-            throw new ItemIsBookedException("Item is already reserved");
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", itemId)));
+        if (!item.getAvailable()) {
+            throw new ItemIsBookedException("Item is already booked");
         }
-        if (booking.getItem().getId().equals(userId)) {
-            throw new NotFoundException("Owner can't bool his item");
+        if (item.getOwnerId().equals(userId)) {
+            throw new NotFoundException("Owner can't book his item");
         }
         booking.setBooker(user);
+        booking.setItem(item);
         booking.setStatus(BookingStatus.WAITING);
         return bookingRepository.save(booking);
     }
@@ -40,11 +43,8 @@ public class BookingServiceImpl implements BookingService {
     public Booking approve(Long userId, Long bookingId, Boolean isApproved) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException(String.format("Booking with id %d not found", bookingId)));
-        Item item = itemRepository.findById(booking.getItem().getId())
-                .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found",
-                        booking.getItem().getId())));
-        if (!item.getOwnerId().equals(userId)) {
-            throw new UserIsNotOwnerException("Only owner of item can approve booking");
+        if (!booking.getItem().getOwnerId().equals(userId)) {
+            throw new UserIsNotOwnerException("Only owner of the item can approve booking");
         }
         if (!booking.getStatus().equals(BookingStatus.WAITING)) {
             throw new ItemIsBookedException("You can change status only for waiting bookings");
@@ -57,10 +57,7 @@ public class BookingServiceImpl implements BookingService {
     public Booking getBooking(Long userId, Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException(String.format("Booking with id %d not found", bookingId)));
-        Item item = itemRepository.findById(booking.getItem().getId())
-                .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found",
-                        booking.getItem().getId())));
-        if (booking.getBooker().getId().equals(userId) || item.getOwnerId().equals(userId)) {
+        if (booking.getBooker().getId().equals(userId) || booking.getItem().getOwnerId().equals(userId)) {
             return booking;
         } else {
             throw new UserIsNotOwnerException("Only owner of the item or booker can view information about booking");

@@ -51,8 +51,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> getRejectedUsersItemsBookings(Long userId, BookingStatus status);
 
 
-    // Не знаю как лучше - делать фильтрацию и сортировку на стороне БД или Java
-    //        Для сортировки и фильтрации на стороне БД
+//    Для сортировки и фильтрации на стороне БД
     @Query(value = "SELECT * FROM bookings b INNER JOIN items i on i.id = b.item_id "
             + "WHERE b.item_id = ?1 AND b.end_time < ?2 ORDER BY b.end_time ASC LIMIT 1",
             nativeQuery = true)
@@ -62,11 +61,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             + "WHERE b.item_id = ?1 and b.start_time > ?2 ORDER BY b.start_time ASC LIMIT 1",
             nativeQuery = true)
     Optional<Booking> getNextItemBooking(Long itemId, LocalDateTime nowTime);
-
-    // Не знаю как лучше - делать фильтрацию и сортировку на стороне БД или Java
-    //Пока оставил на стороне БД
-    //        Для сортировки и фильтрации на стороне Java
-//    List<BookingDto> findAllByItem(Item item);
 
     List<Booking> findAllByItemAndBookerIdAndStatusIsAndEndIsBefore(Item item,
                                                                     Long userId,
