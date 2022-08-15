@@ -1,19 +1,18 @@
 package ru.practicum.shareit.item;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import ru.practicum.shareit.booking.dto.ForItemBookingDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@Builder
 public class ItemDto {
-//
-//    TODO разобраться как нормально обработать ошибки при некорректной валидаии через аннотации
-//
     private Long id;
     @NotBlank (message = "Name can't be empty")
     private String name;
@@ -21,4 +20,7 @@ public class ItemDto {
     private String description;
     @NotNull
     private Boolean available;
+    private ForItemBookingDto lastBooking;
+    private ForItemBookingDto nextBooking;
+    private List<CommentDto> comments;
 }
