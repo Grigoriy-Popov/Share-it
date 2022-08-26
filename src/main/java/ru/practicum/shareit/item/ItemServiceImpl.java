@@ -1,7 +1,8 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -10,6 +11,7 @@ import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.UserHasNotBookedItem;
 import ru.practicum.shareit.exceptions.UserIsNotOwnerException;
+import ru.practicum.shareit.requests.ItemRequestService;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
@@ -20,17 +22,19 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestService requestService;
 
-    public ItemDto addItem(ItemDto itemDto, Long userId) {
-        userService.getUserById(userId); // Для проверки существует ли владелец вещи
+    public ItemDto createItem(ItemDto itemDto, Long userId) {
+        User user = userService.getUserById(userId);
         Item item = ItemMapper.fromDto(itemDto);
-        item.setOwnerId(userId);
+        item.setItemRequest(itemDto.getRequestId() != null ?
+                requestService.getRequestById(itemDto.getRequestId(), userId) : null);
+        item.setOwner(user);
         return ItemMapper.toDto(itemRepository.save(item));
     }
 
@@ -38,7 +42,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto getItemById(Long itemId, Long userId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", itemId)));
-        if (item.getOwnerId().equals(userId)) {
+        if (item.getOwner().getId().equals(userId)) {
             setLastAndNextBooking(item);
         }
         ItemDto itemDto = ItemMapper.toDto(item);
@@ -47,8 +51,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getAllUsersItems(Long userId) {
-        List<ItemDto> items = itemRepository.getAllByOwnerId(userId).stream()
+    public List<ItemDto> getAllUserItems(Long userId, Integer from, Integer size) {
+        Pageable page = PageRequest.of(from / size, size);
+        List<ItemDto> items = itemRepository.getAllByOwnerId(userId, page).stream()
                 .map(this::setLastAndNextBooking)
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
@@ -62,7 +67,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto editItem(ItemDto itemDto, Long itemId, Long userId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", itemId)));
-        if (item.getOwnerId().equals(userId)) {
+        if (item.getOwner().getId().equals(userId)) {
             if (itemDto.getName() != null) {
                 item.setName(itemDto.getName());
             }
@@ -78,14 +83,14 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    public List<ItemDto> searchAvailableItems(String text) {
+    @Override
+    public List<ItemDto> searchAvailableItemsByKeyword(String text, Integer from, Integer size) {
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
-        List<Item> items = itemRepository.searchAvailableItems(text);
-        return items.stream()
-                .map(ItemMapper::toDto)
-                .collect(Collectors.toList());
+        Pageable page = PageRequest.of(from / size, size);
+        List<Item> items = itemRepository.searchAvailableItemsByKeyword(text, page);
+        return ItemMapper.toDtoList(items);
     }
 
     // Сортировка и фильтрация происходит на стороне БД
@@ -111,7 +116,6 @@ public class ItemServiceImpl implements ItemService {
         }
         comment.setItem(item);
         comment.setAuthor(user);
-        comment.setCreated(now);
         return commentRepository.save(comment);
     }
 }
