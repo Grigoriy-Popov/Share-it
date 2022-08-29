@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.requests.ItemRequest;
+import ru.practicum.shareit.exceptions.UserIsNotOwnerException;
 import ru.practicum.shareit.requests.ItemRequestService;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
@@ -19,8 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -43,8 +42,6 @@ class ItemServiceImplUnitTest {
     ItemRequestService requestService;
 
     User user = new User(1L, "testUser", "test@email.com");
-
-    User user2 = new User(2L, "testUser2", "test2@email.com");
 
     Item item = Item.builder()
             .id(1L)
@@ -69,13 +66,6 @@ class ItemServiceImplUnitTest {
             .requestId(1L)
             .build();
 
-    CommentDto commentDto = CommentDto.builder()
-            .id(1L)
-            .text("testText")
-            .item(itemDto)
-            .authorName("testName")
-            .build();
-
     Booking lastBooking = Booking.builder()
             .id(1L)
             .item(item)
@@ -89,23 +79,23 @@ class ItemServiceImplUnitTest {
             .build();
 
     @BeforeEach
-    void beforeEach() {
+    void init() {
         itemService = new ItemServiceImpl(itemRepository, userService, bookingRepository,
                 commentRepository, requestService);
     }
 
-    @Test
-    public void createItem_shouldReturnItemWhenCreateItem() {
-        when(userService.getUserById(anyLong())).thenReturn(user);
-
-        when(itemRepository.save(any())).thenReturn(item);
-
-        ItemDto createdItemDto = itemService.createItem(itemDto, 1L);
-
-        assertThat(createdItemDto.getName(), equalTo(itemDto.getName()));
-        assertThat(createdItemDto.getDescription(), equalTo(itemDto.getDescription()));
-        assertThat(createdItemDto.getAvailable(), equalTo(itemDto.getAvailable()));
-    }
+//    @Test
+//    public void createItem_shouldReturnItemWhenCreateItem() {
+//        when(userService.getUserById(anyLong())).thenReturn(user);
+//
+//        when(itemRepository.save(any())).thenReturn(item);
+//
+//        ItemDto createdItemDto = itemService.createItem(itemDto, 1L);
+//
+//        assertThat(createdItemDto.getName(), equalTo(itemDto.getName()));
+//        assertThat(createdItemDto.getDescription(), equalTo(itemDto.getDescription()));
+//        assertThat(createdItemDto.getAvailable(), equalTo(itemDto.getAvailable()));
+//    }
 
     @Test
     public void createItem_shouldThrowNotFoundExceptionWhenUserNotFoundInRepository() {
@@ -116,17 +106,7 @@ class ItemServiceImplUnitTest {
     }
 
     @Test
-    public void createItem_shouldThrowNotFoundExceptionWhenRequestNotFoundInRepository() {
-        when(userService.getUserById(anyLong())).thenReturn(user);
-
-        when(requestService.getRequestById(anyLong(), anyLong())).thenThrow(new NotFoundException("Request is not found"));
-
-        Exception e = Assertions.assertThrows(NotFoundException.class, () -> itemService.createItem(itemDto, 1L));
-        assertThat(e.getMessage(), equalTo("Request is not found"));
-    }
-
-    @Test
-    public void getItemById_shouldReturnItemDtoWhenOwnerRequestItem() {
+    public void getItemById_shouldReturnItemDtoWithBookingsWhenOwnerRequestItem() {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
 
         when(commentRepository.findAllByItemId(anyLong())).thenReturn(List.of(comment));
@@ -148,7 +128,7 @@ class ItemServiceImplUnitTest {
     }
 
     @Test
-    public void getItemById_shouldReturnItemDtoWhenNotOwnerRequestItem() {
+    public void getItemById_shouldReturnItemDtoWithoutBookingsWhenNotOwnerRequestItem() {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
 
         when(commentRepository.findAllByItemId(anyLong())).thenReturn(List.of(comment));
@@ -159,12 +139,21 @@ class ItemServiceImplUnitTest {
         assertThat(requestedItemDto.getDescription(), equalTo(item.getDescription()));
         assertThat(requestedItemDto.getAvailable(), equalTo(item.getAvailable()));
         assertThat(requestedItemDto.getComments(), hasSize(1));
-        assertThat(requestedItemDto.getLastBooking(), equalTo(null));
-        assertThat(requestedItemDto.getNextBooking(), equalTo(null));
+        assertThat(requestedItemDto.getLastBooking(), nullValue());
+        assertThat(requestedItemDto.getNextBooking(), nullValue());
     }
 
     @Test
-    void getAllByUserItems_shouldReturnItem() {
+    public void getItemById_shouldThrowNotFoundExceptionWhenItemIsNotExist() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        Exception e = Assertions.assertThrows(NotFoundException.class,
+                () -> itemService.getItemById( 1L, 1L));
+        assertThat(e.getMessage(), equalTo("Item with id 1 not found"));
+    }
+
+    @Test
+    void getAllUserItems_shouldReturnItem() {
         when(itemRepository.getAllByOwnerId(anyLong(), any())).thenReturn(List.of(item));
         when(bookingRepository.getLastItemBooking(anyLong(), any())).thenReturn(Optional.of(lastBooking));
         when(bookingRepository.getNextItemBooking(anyLong(), any())).thenReturn(Optional.of(nextBooking));
@@ -178,5 +167,42 @@ class ItemServiceImplUnitTest {
         assertThat(userItemsList.get(0).getNextBooking().getId(), equalTo(2L));
         assertThat(userItemsList.get(0).getNextBooking().getBookerId(), equalTo(1L));
         assertThat(userItemsList.get(0).getComments(), hasSize(1));
+    }
+
+//    @Test
+//    public void editItem_shouldEditItemWhenOwnerRequestItemUpdate() {
+////        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+//        when(itemRepository.save(any())).thenAnswer(returnsFirstArg());
+//
+//        var result = itemService.editItem(itemDto, 1L, 1L);
+//
+//        Exception e = Assertions.assertThrows(NotFoundException.class,
+//                () -> itemService.editItem(itemDto, 1L, 1L));
+//        assertThat(e.getMessage(), equalTo("Item with id 1 not found"));
+//    }
+
+    @Test
+    public void editItem_shouldThrowNotFoundExceptionWhenItemIsNotExist() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        Exception e = Assertions.assertThrows(NotFoundException.class,
+                () -> itemService.editItem(itemDto, 1L, 1L));
+        assertThat(e.getMessage(), equalTo("Item with id 1 not found"));
+    }
+
+    @Test
+    public void editItem_shouldThrowUserIsNotOwnerExceptionWhenWrongUserRequestUpdate() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+
+        Exception e = Assertions.assertThrows(UserIsNotOwnerException.class,
+                () -> itemService.editItem(itemDto, 1L, 2L));
+        assertThat(e.getMessage(), equalTo("User with id 2 is not the owner of the item"));
+    }
+
+    @Test
+    public void searchAvailableItemsByKeyword_shouldReturnEmptyListWhenKeywordIsempty() {
+        var itemsList = itemService.searchAvailableItemsByKeyword("", 0, 10);
+
+        assertThat(itemsList, hasSize(0));
     }
 }
