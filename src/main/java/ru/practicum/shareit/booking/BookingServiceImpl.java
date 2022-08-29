@@ -76,8 +76,8 @@ public class BookingServiceImpl implements BookingService {
             case ALL:
                 return bookingRepository.findAllByBookerIdOrderByStartDesc(userId, page);
             case CURRENT:
-                return bookingRepository.findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc
-                        (userId, now, now, page);
+                return bookingRepository.findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(userId, now,
+                        now, page);
             case PAST:
                 return bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc(userId, now, page);
             case FUTURE:
@@ -86,7 +86,8 @@ public class BookingServiceImpl implements BookingService {
                 return bookingRepository.findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc(userId,
                         now, BookingStatus.WAITING, page);
             case REJECTED:
-                return bookingRepository.findAllByBookerIdAndStatusIsOrderByStartDesc(userId, BookingStatus.REJECTED, page);
+                return bookingRepository.findAllByBookerIdAndStatusIsOrderByStartDesc(userId,
+                        BookingStatus.REJECTED, page);
             default:
                 throw new IncorrectStateException("Unknown state");
         }

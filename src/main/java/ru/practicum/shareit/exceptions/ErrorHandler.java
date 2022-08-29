@@ -10,7 +10,6 @@ import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @RestControllerAdvice
 public class ErrorHandler {
 
@@ -40,7 +39,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<Map<String,String>> errorHandler(MethodArgumentTypeMismatchException e){
+    public ResponseEntity<Map<String,String>> errorHandler(MethodArgumentTypeMismatchException e) {
         Map<String,String> response = new HashMap<>();
         response.put("error", String.format("Unknown %s: %s", e.getName(), e.getValue()));
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
