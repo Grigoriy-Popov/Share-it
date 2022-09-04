@@ -26,7 +26,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking createBooking(Booking booking, Long userId, Long itemId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", userId)));
+                .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", userId)));
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", itemId)));
         if (!item.getAvailable()) {

@@ -10,13 +10,14 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
+import static ru.practicum.shareit.Constants.USER_ID_HEADER;
+
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
 @Validated
 public class ItemController {
     private final ItemService itemService;
-    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
     public ItemDto createItem(@Valid @RequestBody ItemDto itemDto,
@@ -35,8 +36,10 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getAllUserItems(@RequestHeader(USER_ID_HEADER) Long userId,
-                                         @PositiveOrZero @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
-                                         @Positive @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+                                         @PositiveOrZero @RequestParam(name = "from", required = false,
+                                                 defaultValue = "0") Integer from,
+                                         @Positive @RequestParam(name = "size", required = false,
+                                                 defaultValue = "10") Integer size) {
         return itemService.getAllUserItems(userId, from, size);
     }
 
@@ -49,8 +52,10 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> searchAvailableItemsByKeyword(@RequestParam(defaultValue = "") String text,
-                                                       @PositiveOrZero @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
-                                                       @Positive @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+                                                       @PositiveOrZero @RequestParam(name = "from", required = false,
+                                                               defaultValue = "0") Integer from,
+                                                       @Positive @RequestParam(name = "size", required = false,
+                                                               defaultValue = "10") Integer size) {
         return itemService.searchAvailableItemsByKeyword(text, from, size);
     }
 

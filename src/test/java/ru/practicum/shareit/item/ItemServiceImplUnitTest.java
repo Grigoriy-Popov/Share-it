@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,11 +9,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exceptions.UserHasNotBookedItem;
 import ru.practicum.shareit.exceptions.UserIsNotOwnerException;
-import ru.practicum.shareit.requests.ItemRequestService;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +26,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiceImplUnitTest {
-
     @InjectMocks
     ItemServiceImpl itemService;
-
     @Mock
     ItemRepository itemRepository;
     @Mock
@@ -38,67 +36,17 @@ class ItemServiceImplUnitTest {
     BookingRepository bookingRepository;
     @Mock
     CommentRepository commentRepository;
-    @Mock
-    ItemRequestService requestService;
 
     User user = new User(1L, "testUser", "test@email.com");
-
-    Item item = Item.builder()
-            .id(1L)
-            .name("testItem")
-            .description("testDescr")
-            .available(true)
-            .owner(user)
-            .build();
-
-    Comment comment = Comment.builder()
-            .id(1L)
-            .text("testText")
-            .item(item)
-            .author(user)
-            .build();
-
-    ItemDto itemDto = ItemDto.builder()
-            .id(1L)
-            .name("testItem")
-            .description("testDescr")
-            .available(true)
-            .requestId(1L)
-            .build();
-
-    Booking lastBooking = Booking.builder()
-            .id(1L)
-            .item(item)
-            .booker(user)
-            .build();
-
-    Booking nextBooking = Booking.builder()
-            .id(2L)
-            .item(item)
-            .booker(user)
-            .build();
-
-    @BeforeEach
-    void init() {
-        itemService = new ItemServiceImpl(itemRepository, userService, bookingRepository,
-                commentRepository, requestService);
-    }
-
-//    @Test
-//    public void createItem_shouldReturnItemWhenCreateItem() {
-//        when(userService.getUserById(anyLong())).thenReturn(user);
-//
-//        when(itemRepository.save(any())).thenReturn(item);
-//
-//        ItemDto createdItemDto = itemService.createItem(itemDto, 1L);
-//
-//        assertThat(createdItemDto.getName(), equalTo(itemDto.getName()));
-//        assertThat(createdItemDto.getDescription(), equalTo(itemDto.getDescription()));
-//        assertThat(createdItemDto.getAvailable(), equalTo(itemDto.getAvailable()));
-//    }
+    Item item = Item.builder().id(1L).name("testItem").description("testDescr").available(true).owner(user).build();
+    Comment comment = Comment.builder().id(1L).text("testText").item(item).author(user).build();
+    ItemDto itemDto = ItemDto.builder().id(1L).name("testItem").description("testDescr").available(true)
+            .requestId(1L).build();
+    Booking lastBooking = Booking.builder().id(1L).item(item).booker(user).build();
+    Booking nextBooking = Booking.builder().id(2L).item(item).booker(user).build();
 
     @Test
-    public void createItem_shouldThrowNotFoundExceptionWhenUserNotFoundInRepository() {
+    public void createItem_shouldThrowNotFoundExceptionWhenUserNotFound() {
         when(userService.getUserById(anyLong())).thenThrow(new NotFoundException("User is not found"));
 
         Exception e = Assertions.assertThrows(NotFoundException.class, () -> itemService.createItem(itemDto, 1L));
@@ -147,8 +95,8 @@ class ItemServiceImplUnitTest {
     public void getItemById_shouldThrowNotFoundExceptionWhenItemIsNotExist() {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        Exception e = Assertions.assertThrows(NotFoundException.class,
-                () -> itemService.getItemById( 1L, 1L));
+        Exception e = Assertions.assertThrows(NotFoundException.class, () -> itemService
+                .getItemById(1L, 1L));
         assertThat(e.getMessage(), equalTo("Item with id 1 not found"));
     }
 
@@ -169,20 +117,8 @@ class ItemServiceImplUnitTest {
         assertThat(userItemsList.get(0).getComments(), hasSize(1));
     }
 
-//    @Test
-//    public void editItem_shouldEditItemWhenOwnerRequestItemUpdate() {
-////        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
-//        when(itemRepository.save(any())).thenAnswer(returnsFirstArg());
-//
-//        var result = itemService.editItem(itemDto, 1L, 1L);
-//
-//        Exception e = Assertions.assertThrows(NotFoundException.class,
-//                () -> itemService.editItem(itemDto, 1L, 1L));
-//        assertThat(e.getMessage(), equalTo("Item with id 1 not found"));
-//    }
-
     @Test
-    public void editItem_shouldThrowNotFoundExceptionWhenItemIsNotExist() {
+    public void editItem_shouldThrowNotFoundExceptionWhenItemIsNotFound() {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         Exception e = Assertions.assertThrows(NotFoundException.class,
@@ -191,7 +127,7 @@ class ItemServiceImplUnitTest {
     }
 
     @Test
-    public void editItem_shouldThrowUserIsNotOwnerExceptionWhenWrongUserRequestUpdate() {
+    public void editItem_shouldThrowUserIsNotOwnerExceptionWhenNotOwnerRequestUpdate() {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
 
         Exception e = Assertions.assertThrows(UserIsNotOwnerException.class,
@@ -200,9 +136,41 @@ class ItemServiceImplUnitTest {
     }
 
     @Test
-    public void searchAvailableItemsByKeyword_shouldReturnEmptyListWhenKeywordIsempty() {
+    public void searchAvailableItemsByKeyword_shouldReturnEmptyListWhenKeywordIsEmpty() {
         var itemsList = itemService.searchAvailableItemsByKeyword("", 0, 10);
 
         assertThat(itemsList, hasSize(0));
+    }
+
+    @Test
+    public void addComment_shouldThrowExceptionWhenUserNotFound() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        when(userService.getUserById(anyLong())).thenThrow(new NotFoundException("User is not found"));
+
+        Exception e = Assertions.assertThrows(NotFoundException.class, () -> itemService.addComment(comment,
+                1L, 1L));
+        assertThat(e.getMessage(), equalTo("User is not found"));
+    }
+
+    @Test
+    void addComment_shouldThrowExceptionWhenItemNotFound() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        Exception e = Assertions.assertThrows(NotFoundException.class, () -> itemService.addComment(comment,
+                1L, 1L));
+        assertThat(e.getMessage(), equalTo("Item with id 1 not found"));
+    }
+
+    @Test
+    public void addComment_shouldThrowExceptionWhenUserNotFinishedAtLeastOneBookingOfItem() {
+        when(userService.getUserById(anyLong())).thenReturn(user);
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepository.findAllByItemAndBookerIdAndStatusAndEndBefore(any(), any(), any(), any()))
+                .thenReturn(new ArrayList<>());
+
+        Exception e = Assertions.assertThrows(UserHasNotBookedItem.class, () -> itemService.addComment(comment,
+                1L, 1L));
+
+        assertThat(e.getMessage(), equalTo("You need to finish at least one booking to leave a comment"));
     }
 }

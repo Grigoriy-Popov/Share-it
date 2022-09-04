@@ -22,25 +22,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = UserController.class)
 class UserControllerTest {
-
     @Autowired
     ObjectMapper mapper;
-
     @MockBean
     UserService userService;
-
     @Autowired
     private MockMvc mvc;
 
-    UserDto userDto = new UserDto(1L, "testUser", "test@email.com");
+    private static final String BASE_PATH_USERS = "/users";
+
     User user = new User(1L, "testUser", "test@email.com");
+    UserDto userDto = new UserDto(1L, "testUser", "test@email.com");
 
     @Test
     void createUser() throws Exception {
         when(userService.createUser(any()))
                 .thenReturn(user);
 
-        mvc.perform(post("/users")
+        mvc.perform(post(BASE_PATH_USERS)
                         .content(mapper.writeValueAsString(userDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -59,21 +58,21 @@ class UserControllerTest {
         when(userService.createUser(any()))
                 .thenReturn(user);
 
-        mvc.perform(post("/users")
+        mvc.perform(post(BASE_PATH_USERS)
                         .content(mapper.writeValueAsString(emptyNameNameUserDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-        mvc.perform(post("/users")
+        mvc.perform(post(BASE_PATH_USERS)
                         .content(mapper.writeValueAsString(invalidEmailUserDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-        mvc.perform(post("/users")
+        mvc.perform(post(BASE_PATH_USERS)
                         .content(mapper.writeValueAsString(emptyEmailUserDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -86,7 +85,7 @@ class UserControllerTest {
         when(userService.editUser(any(), any()))
                 .thenReturn(user);
 
-        mvc.perform(patch("/users/1")
+        mvc.perform(patch(BASE_PATH_USERS + "/1")
                         .content(mapper.writeValueAsString(userDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -99,7 +98,7 @@ class UserControllerTest {
 
     @Test
     void testDeleteUser() throws Exception {
-        mvc.perform(delete("/users/1"))
+        mvc.perform(delete(BASE_PATH_USERS + "/1"))
                 .andExpect(status().isOk());
         Mockito.verify(userService, Mockito.times(1))
                 .deleteUser(anyLong());
@@ -110,7 +109,7 @@ class UserControllerTest {
         when(userService.getUserById(any()))
                 .thenReturn(user);
 
-        mvc.perform(get("/users/1"))
+        mvc.perform(get(BASE_PATH_USERS + "/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(userDto.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
@@ -122,7 +121,7 @@ class UserControllerTest {
         when(userService.getAllUsers())
                 .thenReturn(List.of(user));
 
-        mvc.perform(get("/users"))
+        mvc.perform(get(BASE_PATH_USERS))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id", is(userDto.getId()), Long.class))
                 .andExpect(jsonPath("$.[0].name", is(userDto.getName())))

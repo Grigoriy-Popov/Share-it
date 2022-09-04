@@ -108,9 +108,8 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", itemId)));
         User user = userService.getUserById(userId);
-        LocalDateTime now = LocalDateTime.now();
-        List<Booking> bookings = bookingRepository
-                .findAllByItemAndBookerIdAndStatusIsAndEndIsBefore(item, userId, BookingStatus.APPROVED, now);
+        List<Booking> bookings = bookingRepository.findAllByItemAndBookerIdAndStatusAndEndBefore(item, userId,
+                        BookingStatus.APPROVED, LocalDateTime.now());
         if (bookings.isEmpty()) {
             throw new UserHasNotBookedItem("You need to finish at least one booking to leave a comment");
         }

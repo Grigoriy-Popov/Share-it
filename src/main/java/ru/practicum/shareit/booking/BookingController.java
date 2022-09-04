@@ -12,13 +12,14 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
+import static ru.practicum.shareit.Constants.USER_ID_HEADER;
+
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 @Validated
 public class BookingController {
     private final BookingService bookingService;
-    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
     public OutputBookingDto createBooking(@RequestHeader(USER_ID_HEADER) Long userId,

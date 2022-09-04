@@ -65,8 +65,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             nativeQuery = true)
     Optional<Booking> getNextItemBooking(Long itemId, LocalDateTime nowTime);
 
-    List<Booking> findAllByItemAndBookerIdAndStatusIsAndEndIsBefore(Item item,
-                                                                    Long userId,
-                                                                    BookingStatus bookingStatus,
-                                                                    LocalDateTime nowTime);
+    List<Booking> findAllByItemAndBookerIdAndStatusAndEndBefore(Item item, Long userId, BookingStatus bookingStatus,
+                                                                LocalDateTime nowTime);
 }
