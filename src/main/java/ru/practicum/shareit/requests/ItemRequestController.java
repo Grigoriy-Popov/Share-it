@@ -37,7 +37,7 @@ public class ItemRequestController {
         return ItemRequestMapper.toDto(itemRequestService.getRequestById(requestId, userId));
     }
 
-    @GetMapping("all")
+    @GetMapping("/all")
     public List<ItemRequestDto> getAllRequests(@RequestHeader(USER_ID_HEADER) @NotNull Long userId,
                                                @PositiveOrZero @RequestParam(name = "from", required = false,
                                                        defaultValue = "0") Integer from,

@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exceptions.ItemOwnerIsNotSetException;
+import ru.practicum.shareit.item.comments.Comment;
+import ru.practicum.shareit.item.comments.CommentDto;
+import ru.practicum.shareit.item.comments.CommentMapper;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;

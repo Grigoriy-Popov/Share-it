@@ -1,7 +1,8 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.comments;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.practicum.shareit.item.ItemDto;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;

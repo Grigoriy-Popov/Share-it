@@ -11,6 +11,8 @@ import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.UserHasNotBookedItem;
 import ru.practicum.shareit.exceptions.UserIsNotOwnerException;
+import ru.practicum.shareit.item.comments.Comment;
+import ru.practicum.shareit.item.comments.CommentRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 

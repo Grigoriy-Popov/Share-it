@@ -8,6 +8,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.requests.ItemRequest;
 import ru.practicum.shareit.requests.ItemRequestService;
 import ru.practicum.shareit.user.User;
