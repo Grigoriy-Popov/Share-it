@@ -1,4 +1,6 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.comments;
+
+import ru.practicum.shareit.item.ItemMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;

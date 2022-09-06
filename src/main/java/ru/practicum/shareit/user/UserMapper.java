@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserMapper {
@@ -12,7 +13,7 @@ public class UserMapper {
         return new User(userDto.getId(), userDto.getName(), userDto.getEmail());
     }
 
-    public static Collection<UserDto> toDtoList(Collection<User> users) {
+    public static List<UserDto> toDtoList(Collection<User> users) {
         return users.stream()
                 .map(UserMapper::toDto)
                 .collect(Collectors.toList());

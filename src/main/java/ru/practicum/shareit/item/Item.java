@@ -3,6 +3,8 @@ package ru.practicum.shareit.item;
 
 import lombok.*;
 import ru.practicum.shareit.booking.dto.ForItemBookingDto;
+import ru.practicum.shareit.requests.ItemRequest;
+import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 
@@ -17,14 +19,15 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name", nullable = false)
     private String name;
-    @Column(name = "description", nullable = false)
     private String description;
-    @Column(name = "available", nullable = false)
     private Boolean available;
-    @Column(name = "owner_id", nullable = false)
-    private Long ownerId;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    private ItemRequest itemRequest;
     @Transient
     private ForItemBookingDto lastBooking;
     @Transient
