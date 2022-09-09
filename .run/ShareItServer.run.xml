@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ShareItServer" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="ru.practicum.shareit.ShareItServer" />
+    <module name="server" />
+    <option name="PROGRAM_PARAMETERS" value="ru.practicum.shareit.ShareItServer" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
