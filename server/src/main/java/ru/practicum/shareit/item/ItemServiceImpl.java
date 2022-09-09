@@ -56,7 +56,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getAllUserItems(Long userId, Integer from, Integer size) {
         Pageable page = PageRequest.of(from / size, size);
-        List<ItemDto> items = itemRepository.getAllByOwnerId(userId, page).stream()
+        List<ItemDto> items = itemRepository.getAllByOwnerIdOrderById(userId, page).stream()
                 .map(this::setLastAndNextBooking)
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());

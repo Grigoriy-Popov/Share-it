@@ -104,7 +104,7 @@ class ItemServiceImplUnitTest {
 
     @Test
     void getAllUserItems_shouldReturnItem() {
-        when(itemRepository.getAllByOwnerId(anyLong(), any())).thenReturn(List.of(item));
+        when(itemRepository.getAllByOwnerIdOrderById(anyLong(), any())).thenReturn(List.of(item));
         when(bookingRepository.getLastItemBooking(anyLong(), any())).thenReturn(Optional.of(lastBooking));
         when(bookingRepository.getNextItemBooking(anyLong(), any())).thenReturn(Optional.of(nextBooking));
         when(commentRepository.findAllByItemId(anyLong())).thenReturn(List.of(comment));
