@@ -50,36 +50,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.email", is(userDto.getEmail())));
     }
 
-//    @Test
-//    void createInvalidUser() throws Exception {
-//        UserDto emptyNameNameUserDto = new UserDto(1L, "", "test@email.com");
-//        UserDto invalidEmailUserDto = new UserDto(1L, "testUser", "testemail.com");
-//        UserDto emptyEmailUserDto = new UserDto(1L, "testUser", "testemail.com");
-//        when(userService.createUser(any()))
-//                .thenReturn(user);
-//
-//        mvc.perform(post(BASE_PATH_USERS)
-//                        .content(mapper.writeValueAsString(emptyNameNameUserDto))
-//                        .characterEncoding(StandardCharsets.UTF_8)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//
-//        mvc.perform(post(BASE_PATH_USERS)
-//                        .content(mapper.writeValueAsString(invalidEmailUserDto))
-//                        .characterEncoding(StandardCharsets.UTF_8)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//
-//        mvc.perform(post(BASE_PATH_USERS)
-//                        .content(mapper.writeValueAsString(emptyEmailUserDto))
-//                        .characterEncoding(StandardCharsets.UTF_8)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//    }
-
     @Test
     void testUpdateUser() throws Exception {
         when(userService.editUser(any(), any()))
