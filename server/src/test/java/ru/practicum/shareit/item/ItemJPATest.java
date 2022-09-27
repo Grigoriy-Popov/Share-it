@@ -31,6 +31,8 @@ public class ItemJPATest {
         em.persist(user);
         em.persist(item);
         em.persist(item2);
+        // Я не особо понимаю, зачем нам тестировать метод репозитория, написанный с помощью JPQL этим же запросом,
+//         а не самим методом
 //        TypedQuery<Item> query  = em.getEntityManager()
 //                .createQuery("select i from Item i " +
 //                        "where i.available = true and upper(i.name) like upper(concat('%', :text, '%')) " +

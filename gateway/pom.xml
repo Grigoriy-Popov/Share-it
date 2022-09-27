@@ -11,16 +11,9 @@
     <artifactId>shareit-gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>ShareIt-Gateway</name>
+    <name>ShareIt Gateway</name>
 
     <dependencies>
-        <dependency>
-            <groupId>ru.practicum</groupId>
-            <artifactId>shareit-server</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

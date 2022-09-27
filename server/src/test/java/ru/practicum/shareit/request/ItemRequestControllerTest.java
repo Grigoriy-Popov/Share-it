@@ -32,6 +32,7 @@ public class ItemRequestControllerTest {
     private static final String BASE_PATH_REQUESTS = "/requests";
     User requester = new User(1L, "testUser", "test@email.com");
     ItemRequest itemRequestToCreate = ItemRequest.builder().description("testDescr").build();
+    ItemRequest invalidItemRequestToCreate = ItemRequest.builder().description("").build();
     ItemRequest createdItemRequest = ItemRequest.builder().description("testDescr").requester(requester).build();
     ItemRequestDto itemRequestDto = ItemRequestMapper.toDto(createdItemRequest);
 
@@ -49,6 +50,19 @@ public class ItemRequestControllerTest {
                 .andExpect(content().json(mapper.writeValueAsString(itemRequestDto)));
     }
 
+//    @Test
+//    void createInvalidRequestWithEmptyDescription_shouldReturnStatus400() throws Exception {
+//        when(itemRequestService.createRequest(any(), anyLong()))
+//                .thenReturn(createdItemRequest);
+//        mvc.perform(post(BASE_PATH_REQUESTS)
+//                        .header(USER_ID_HEADER, 1L)
+//                        .content(mapper.writeValueAsString(invalidItemRequestToCreate))
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest());
+//    }
+
     @Test
     void getAllUserRequests() throws Exception {
         when(itemRequestService.getAllUserRequests(anyLong()))
@@ -61,6 +75,19 @@ public class ItemRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(List.of(itemRequestDto))));
     }
+
+//    @Test
+//    void getAllRequests() throws Exception {
+//        when(itemRequestService.getAllRequests(anyLong(), anyInt(), anyInt()))
+//                .thenReturn(List.of(createdItemRequest));
+//        mvc.perform(get(BASE_PATH_REQUESTS + "/all")
+//                        .header(USER_ID_HEADER, 1L)
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andExpect(content().json(mapper.writeValueAsString(List.of(itemRequestDto))));
+//    }
 
     @Test
     void getRequestById() throws Exception {

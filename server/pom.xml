@@ -11,7 +11,7 @@
 	<artifactId>shareit-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<name>ShareIt-Server</name>
+	<name>ShareIt Server</name>
 
 	<dependencies>
 		<dependency>
@@ -70,18 +70,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-<!--				Для обеспечения связи между модулями приложения-->
-				<executions>
-					<execution>
-						<id>repackage</id>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-						<configuration>
-							<classifier>exec</classifier>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -38,6 +38,9 @@ public class ItemControllerTest {
     User user = new User(1L, "testUser", "test@email.com");
     ItemDto itemDto = ItemDto.builder().id(ITEM_FIRST_ID).name("testName").description("testDescription")
             .available(true).requestId(1L).build();
+    ItemDto itemDtoWithEmptyName = ItemDto.builder().name("").description("test").available(true).build();
+    ItemDto itemDtoWithEmptyDescription = ItemDto.builder().name("test").description("").available(false).build();
+    ItemDto itemDtoWithoutAvailable = ItemDto.builder().name("test").description("").build();
     List<ItemDto> itemsDtoList = List.of(
             new ItemDto(ITEM_FIRST_ID, "testName", "testName", true, 1L,
                     null, null, null),
@@ -66,6 +69,45 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$.description", is(itemDto.getDescription())))
                 .andExpect(jsonPath("$.available", is(itemDto.getAvailable())));
     }
+
+//    @Test
+//    void createInvalidItemWithEmptyName_shouldReturnStatus400() throws Exception {
+//        when(itemService.createItem(any(), eq(ITEM_FIRST_ID)))
+//                .thenReturn(itemDtoWithEmptyName);
+//        mvc.perform(post(BASE_PATH_ITEMS)
+//                        .header(USER_ID_HEADER, user.getId())
+//                        .content(mapper.writeValueAsString(itemDtoWithEmptyName))
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest());
+//    }
+
+//    @Test
+//    void createInvalidItemWithEmptyDescription_shouldReturnStatus400() throws Exception {
+//        when(itemService.createItem(any(), eq(ITEM_FIRST_ID)))
+//                .thenReturn(itemDtoWithEmptyDescription);
+//        mvc.perform(post(BASE_PATH_ITEMS)
+//                        .header(USER_ID_HEADER, user.getId())
+//                        .content(mapper.writeValueAsString(itemDtoWithEmptyDescription))
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest());
+//    }
+
+//    @Test
+//    void createInvalidItemWithoutAvailable_shouldReturnStatus400() throws Exception {
+//        when(itemService.createItem(any(), eq(ITEM_FIRST_ID)))
+//                .thenReturn(itemDtoWithoutAvailable);
+//        mvc.perform(post(BASE_PATH_ITEMS)
+//                        .header(USER_ID_HEADER, user.getId())
+//                        .content(mapper.writeValueAsString(itemDtoWithoutAvailable))
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest());
+//    }
 
     @Test
     void getItemById() throws Exception {
@@ -151,4 +193,17 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$.text", is(comment.getText())))
                 .andExpect(jsonPath("$.authorName", is(comment.getAuthor().getName())));
     }
+
+//    @Test
+//    void addInvalidComment_shouldReturnStatus400() throws Exception {
+//        when(itemService.addComment(any(), anyLong(), anyLong()))
+//                .thenReturn(comment);
+//        mvc.perform(post(BASE_PATH_ITEMS + "/1/comment")
+//                        .header(USER_ID_HEADER, "1")
+//                        .content(mapper.writeValueAsString(invalidCommentDto))
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest());
+//    }
 }

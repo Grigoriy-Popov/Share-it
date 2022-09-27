@@ -18,6 +18,7 @@ import java.util.Map;
 
 import static ru.practicum.shareit.Constants.USER_ID_HEADER;
 
+
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
@@ -73,7 +74,7 @@ public class BookingController {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Map<String, String>> errorHandler(IllegalArgumentException e) {
         Map<String, String> resp = new HashMap<>();
-        resp.put("error", "Unknown state: UNSUPPORTED_STATUS");
+        resp.put("error", String.format("Unknown state: UNSUPPORTED_STATUS"));
         return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
     }
 }

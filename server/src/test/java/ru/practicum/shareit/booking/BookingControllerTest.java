@@ -49,6 +49,10 @@ public class BookingControllerTest {
             .start(LocalDateTime.of(2222, 12, 12, 12, 12, 12))
             .end(LocalDateTime.of(2223, 12, 12, 12, 12, 12))
             .itemId(1L).build();
+    InputBookingDto invalidInputBookingDtoWithWrongStart = InputBookingDto.builder()
+            .start(LocalDateTime.of(1111, 12, 12, 12, 12, 12))
+            .end(LocalDateTime.of(2223, 12, 12, 12, 12, 12))
+            .itemId(1L).build();
     OutputBookingDto outputBookingDto = BookingMapper.toOutputDto(booking);
 
     @Test
@@ -64,6 +68,19 @@ public class BookingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(outputBookingDto)));
     }
+
+//    @Test
+//    void createBookingWithWrongStart_shouldReturnStatus400() throws Exception {
+//        when(bookingService.createBooking(any(), anyLong(), anyLong()))
+//                .thenReturn(booking);
+//        mvc.perform(post(BASE_PATH_BOOKINGS)
+//                        .header(USER_ID_HEADER, 2L)
+//                        .content(mapper.writeValueAsString(invalidInputBookingDtoWithWrongStart))
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest());
+//    }
 
     @Test
     void approveBooking() throws Exception {
@@ -92,6 +109,34 @@ public class BookingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(outputBookingDto)));
     }
+
+//    @Test
+//    void getAllUserBookings() throws Exception {
+//        when(bookingService.getAllUserBookings(anyLong(), any(), anyInt(), anyInt()))
+//                .thenReturn(List.of(booking));
+//
+//        mvc.perform(get(BASE_PATH_BOOKINGS + "?state=ALL")
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .header(USER_ID_HEADER, 2L)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andExpect(content().json(mapper.writeValueAsString(List.of(outputBookingDto))));
+//    }
+
+//    @Test
+//    void getAllUserItemsBookings() throws Exception {
+//        when(bookingService.getAllUserItemsBookings(anyLong(), any(), anyInt(), anyInt()))
+//                .thenReturn(List.of(booking));
+//
+//        mvc.perform(get(BASE_PATH_BOOKINGS + "/owner?state=ALL")
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .header(USER_ID_HEADER, 1L)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andExpect(content().json(mapper.writeValueAsString(List.of(outputBookingDto))));
+//    }
 
     @Test
     void getAllUserBookings_shouldReturnStatus400() throws Exception {
