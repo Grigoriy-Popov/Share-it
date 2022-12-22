@@ -13,6 +13,7 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.UserService;
 
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ class BookingServiceImplTest {
     @Mock
     ItemRepository itemRepository;
     @Mock
-    UserRepository userRepository;
+    UserService userService;
     @Mock
     BookingRepository bookingRepository;
 
@@ -39,7 +40,8 @@ class BookingServiceImplTest {
 
     @Test
     public void createBooking_shouldThrowExceptionWhenUserNotFound() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(userService.getUserById(anyLong()))
+                .thenThrow(new NotFoundException(String.format("User with id %d not found", 1)));
 
         Exception e = Assertions.assertThrows(NotFoundException.class, () -> bookingService.createBooking(booking,
                 1L, 1L));
@@ -48,7 +50,7 @@ class BookingServiceImplTest {
 
     @Test
     public void createBooking_shouldThrowExceptionWhenItemNotFound() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(userService.getUserById(anyLong())).thenReturn(user);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         Exception e = Assertions.assertThrows(NotFoundException.class, () -> bookingService.createBooking(booking,
@@ -58,7 +60,7 @@ class BookingServiceImplTest {
 
     @Test
     public void createBooking_shouldThrowExceptionWhenItemIsBooked() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(userService.getUserById(anyLong())).thenReturn(user);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(unavailableItem));
 
         Exception e = Assertions.assertThrows(ItemIsBookedException.class, () -> bookingService.createBooking(booking,
@@ -68,7 +70,7 @@ class BookingServiceImplTest {
 
     @Test
     public void createBooking_shouldThrowExceptionWhenOwnerTryToBookHisItem() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(userService.getUserById(anyLong())).thenReturn(user);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(availableItem));
 
         Exception e = Assertions.assertThrows(NotFoundException.class, () -> bookingService.createBooking(booking,
@@ -123,7 +125,8 @@ class BookingServiceImplTest {
 
     @Test
     public void getAllUserBookings_shouldThrowExceptionWhenBookingNotFound() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(userService.checkExistenceById(anyLong()))
+                .thenThrow(new NotFoundException(String.format("User with id %d not found", 1)));
 
         Exception e = Assertions.assertThrows(NotFoundException.class, () -> bookingService.getAllUserBookings(1L,
                 BookingState.ALL, 0, 10));
@@ -132,7 +135,8 @@ class BookingServiceImplTest {
 
     @Test
     public void getAllUserItemsBookings_shouldThrowExceptionWhenBookingNotFound() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(userService.getUserById(anyLong()))
+                .thenThrow(new NotFoundException(String.format("User with id %d not found", 1)));
 
         Exception e = Assertions.assertThrows(NotFoundException.class,
                 () -> bookingService.getAllUserItemsBookings(1L, BookingState.ALL, 0, 10));

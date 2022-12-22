@@ -38,7 +38,7 @@ class ItemRequestServiceImplUnitTest {
 
     @Test
     void getAllUserRequests_shouldThrowExceptionWhenUserNotFound() {
-        when(userService.getUserById(anyLong())).thenThrow(new NotFoundException("User not found"));
+        when(userService.checkExistenceById(anyLong())).thenThrow(new NotFoundException("User not found"));
 
         Exception e = Assertions.assertThrows(NotFoundException.class,
                 () -> itemRequestService.getAllUserRequests(1L));
@@ -47,7 +47,7 @@ class ItemRequestServiceImplUnitTest {
 
     @Test
     void getAllRequests_shouldThrowExceptionWhenUserNotFound() {
-        when(userService.getUserById(anyLong())).thenThrow(new NotFoundException("User not found"));
+        when(userService.checkExistenceById(anyLong())).thenThrow(new NotFoundException("User not found"));
 
         Exception e = Assertions.assertThrows(NotFoundException.class,
                 () -> itemRequestService.getAllRequests(1L, 0, 10));
@@ -56,7 +56,7 @@ class ItemRequestServiceImplUnitTest {
 
     @Test
     void getRequestById_shouldThrowExceptionWhenUserNotFound() {
-        when(userService.getUserById(anyLong())).thenThrow(new NotFoundException("User not found"));
+        when(userService.checkExistenceById(anyLong())).thenThrow(new NotFoundException("User not found"));
 
         Exception e = Assertions.assertThrows(NotFoundException.class,
                 () -> itemRequestService.getRequestById(1L, 1L));

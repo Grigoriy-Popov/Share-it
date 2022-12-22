@@ -122,7 +122,8 @@ public class BookingServiceIntegrationTest {
         itemService.createItem(itemDtoToCreate, 1L);
         Booking createdBooking = bookingService.createBooking(bookingToCreate, 2L, 1L);
 
-        List<Booking> userBookingsList = bookingService.getAllUserItemsBookings(1L, BookingState.ALL, 0, 10);
+        List<Booking> userBookingsList = bookingService
+                .getAllUserItemsBookings(1L, BookingState.ALL, 0, 10);
 
         assertThat(userBookingsList, hasSize(1));
         assertThat(userBookingsList.get(0).getId(), equalTo(createdBooking.getId()));
