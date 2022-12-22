@@ -42,9 +42,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto getItemById(Long itemId, Long userId) {
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", itemId)));
+    public ItemDto getItemByIdByUser(Long itemId, Long userId) {
+        Item item = getItemFromRepoById(itemId);
         if (item.getOwner().getId().equals(userId)) {
             setLastAndNextBooking(item);
         }
@@ -57,7 +56,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> getAllUserItems(Long userId, Integer from, Integer size) {
         Pageable page = PageRequest.of(from / size, size);
         List<ItemDto> items = itemRepository.getAllByOwnerIdOrderById(userId, page).stream()
-                .map(this::setLastAndNextBooking)
+                .peek(this::setLastAndNextBooking)
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
         for (ItemDto itemDto : items) {
@@ -68,8 +67,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto editItem(ItemDto itemDto, Long itemId, Long userId) {
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", itemId)));
+        Item item = getItemFromRepoById(itemId);
         if (item.getOwner().getId().equals(userId)) {
             if (itemDto.getName() != null) {
                 item.setName(itemDto.getName());
@@ -98,7 +96,7 @@ public class ItemServiceImpl implements ItemService {
 
     // Сортировка и фильтрация происходит на стороне БД
     private Item setLastAndNextBooking(Item item) {
-        LocalDateTime now = LocalDateTime.now();
+        var now = LocalDateTime.now();
         bookingRepository.getLastItemBooking(item.getId(), now)
                 .ifPresent(booking -> item.setLastBooking(BookingMapper.toItemBookingDto(booking)));
         bookingRepository.getNextItemBooking(item.getId(), now)
@@ -108,8 +106,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Comment addComment(Comment comment, Long userId, Long itemId) {
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", itemId)));
+        Item item = getItemFromRepoById(itemId);
         User user = userService.getUserById(userId);
         List<Booking> bookings = bookingRepository.findAllByItemAndBookerIdAndStatusAndEndBefore(item, userId,
                         BookingStatus.APPROVED, LocalDateTime.now());
@@ -119,5 +116,10 @@ public class ItemServiceImpl implements ItemService {
         comment.setItem(item);
         comment.setAuthor(user);
         return commentRepository.save(comment);
+    }
+
+    private Item getItemFromRepoById(Long itemId) {
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", itemId)));
     }
 }

@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.ItemMapper;
 
 import java.util.Collections;
@@ -7,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class ItemRequestMapper {
 
     public static ItemRequestDto toDto(ItemRequest itemRequest) {

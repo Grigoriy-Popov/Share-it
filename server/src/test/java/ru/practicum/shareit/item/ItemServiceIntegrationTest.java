@@ -77,7 +77,7 @@ public class ItemServiceIntegrationTest {
         requestService.createRequest(itemRequestToCreate, 1L);
 
         ItemDto itemDto = itemService.createItem(itemDtoToCreate, 1L);
-        ItemDto itemDto2 = itemService.getItemById(1L, 1L);
+        ItemDto itemDto2 = itemService.getItemByIdByUser(1L, 1L);
 
         assertThat(itemDto.getId(), equalTo(itemDto2.getId()));
         assertThat(itemDto.getName(), equalTo(itemDto2.getName()));
@@ -122,28 +122,28 @@ public class ItemServiceIntegrationTest {
         var itemDtoToEditName = ItemDto.builder().name("updatedName").build();
         itemService.editItem(itemDtoToEditName, 1L, 1L);
 
-        assertThat(itemService.getItemById(1L, 1L).getName(), equalTo(itemDtoToEditName.getName()));
+        assertThat(itemService.getItemByIdByUser(1L, 1L).getName(), equalTo(itemDtoToEditName.getName()));
 
         var itemDtoToEditDescription = ItemDto.builder().description("updatedDescription").build();
         itemService.editItem(itemDtoToEditDescription, 1L, 1L);
 
-        assertThat(itemService.getItemById(1L, 1L).getDescription(),
+        assertThat(itemService.getItemByIdByUser(1L, 1L).getDescription(),
                 equalTo(itemDtoToEditDescription.getDescription()));
 
         var itemDtoToEditAvailable = ItemDto.builder().available(false).build();
         itemService.editItem(itemDtoToEditAvailable, 1L, 1L);
 
-        assertThat(itemService.getItemById(1L, 1L).getAvailable(),
+        assertThat(itemService.getItemByIdByUser(1L, 1L).getAvailable(),
                 equalTo(itemDtoToEditAvailable.getAvailable()));
 
         var itemDtoToEditFull = ItemDto.builder().name("updatedName2").description("updatedDescription2")
                 .available(true).build();
         itemService.editItem(itemDtoToEditFull, 1L, 1L);
 
-        assertThat(itemService.getItemById(1L, 1L).getName(), equalTo(itemDtoToEditFull.getName()));
-        assertThat(itemService.getItemById(1L, 1L).getDescription(),
+        assertThat(itemService.getItemByIdByUser(1L, 1L).getName(), equalTo(itemDtoToEditFull.getName()));
+        assertThat(itemService.getItemByIdByUser(1L, 1L).getDescription(),
                 equalTo(itemDtoToEditFull.getDescription()));
-        assertThat(itemService.getItemById(1L, 1L).getAvailable(),
+        assertThat(itemService.getItemByIdByUser(1L, 1L).getAvailable(),
                 equalTo(itemDtoToEditFull.getAvailable()));
     }
 

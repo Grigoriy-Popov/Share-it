@@ -92,7 +92,7 @@ public class BookingServiceIntegrationTest {
         ItemDto itemDto = itemService.createItem(itemDtoToCreate, 1L);
         bookingService.createBooking(bookingToCreate, 2L, 1L);
 
-        Booking returnedBooking = bookingService.getBookingById(2L, 1L);
+        Booking returnedBooking = bookingService.getBookingByIdByUser(2L, 1L);
 
         assertThat(returnedBooking.getId(), equalTo(1L));
         assertThat(returnedBooking.getStart(), equalTo(bookingToCreate.getStart()));

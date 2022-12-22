@@ -11,4 +11,5 @@ public interface ItemRequestService {
     List<ItemRequest> getAllRequests(Long userId, Integer from, Integer size);
 
     ItemRequest getRequestById(Long requestId, Long userId);
+
 }

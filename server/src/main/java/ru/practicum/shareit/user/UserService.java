@@ -8,6 +8,8 @@ public interface UserService {
 
     User getUserById(Long userId);
 
+    boolean checkExistenceById(Long userId);
+
     List<User> getAllUsers();
 
     User editUser(User user, Long userId);

@@ -9,27 +9,36 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
 
     @Override
     public User createUser(User user) {
-        return repository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
     public User getUserById(Long userId) {
-        return repository.findById(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", userId)));
     }
 
     @Override
+    public boolean checkExistenceById(Long userId) {
+        if (userRepository.existsById(userId)) {
+            return true;
+        } else {
+            throw new NotFoundException(String.format("User with id %d not found", userId));
+        }
+    }
+
+    @Override
     public List<User> getAllUsers() {
-        return repository.findAll();
+        return userRepository.findAll();
     }
 
     @Override
     public User editUser(User updateUser, Long userId) {
-        User user = repository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", userId)));
         if (updateUser.getName() != null) {
             user.setName(updateUser.getName());
@@ -37,11 +46,11 @@ public class UserServiceImpl implements UserService {
         if (updateUser.getEmail() != null) {
             user.setEmail(updateUser.getEmail());
         }
-        return repository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
     public void deleteUser(Long userId) {
-        repository.deleteById(userId);
+        userRepository.deleteById(userId);
     }
 }

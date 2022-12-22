@@ -65,7 +65,7 @@ class ItemServiceImplUnitTest {
 
         when(bookingRepository.getNextItemBooking(anyLong(), any())).thenReturn(Optional.of(nextBooking));
 
-        var requestedItemDto = itemService.getItemById(1L, 1L);
+        var requestedItemDto = itemService.getItemByIdByUser(1L, 1L);
 
         assertThat(requestedItemDto.getName(), equalTo(item.getName()));
         assertThat(requestedItemDto.getDescription(), equalTo(item.getDescription()));
@@ -83,7 +83,7 @@ class ItemServiceImplUnitTest {
 
         when(commentRepository.findAllByItemId(anyLong())).thenReturn(List.of(comment));
 
-        var requestedItemDto = itemService.getItemById(1L, 2L);
+        var requestedItemDto = itemService.getItemByIdByUser(1L, 2L);
 
         assertThat(requestedItemDto.getName(), equalTo(item.getName()));
         assertThat(requestedItemDto.getDescription(), equalTo(item.getDescription()));
@@ -98,7 +98,7 @@ class ItemServiceImplUnitTest {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         Exception e = Assertions.assertThrows(NotFoundException.class, () -> itemService
-                .getItemById(1L, 1L));
+                .getItemByIdByUser(1L, 1L));
         assertThat(e.getMessage(), equalTo("Item with id 1 not found"));
     }
 

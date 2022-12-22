@@ -34,7 +34,7 @@ public class BookingController {
     @GetMapping("/{bookingId}")
     public OutputBookingDto getBookingById(@RequestHeader(USER_ID_HEADER) Long userId,
                               @PathVariable Long bookingId) {
-        return BookingMapper.toOutputDto(bookingService.getBookingById(userId, bookingId));
+        return BookingMapper.toOutputDto(bookingService.getBookingByIdByUser(userId, bookingId));
     }
 
     @GetMapping

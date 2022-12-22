@@ -30,7 +30,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequest> getAllUserRequests(Long userId) {
-        userService.getUserById(userId);
+        userService.checkExistenceById(userId);
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(userId);
         for (ItemRequest itemRequest : itemRequests) {
             List<Item> items = itemRepository.findAllByItemRequest(itemRequest);
@@ -41,7 +41,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequest> getAllRequests(Long userId, Integer from, Integer size) {
-        userService.getUserById(userId);
+        userService.checkExistenceById(userId);
         Pageable page = PageRequest.of(from / size, size, Sort.by("created"));
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequesterIdIsNot(userId, page).getContent();
         for (ItemRequest itemRequest : itemRequests) {
@@ -53,7 +53,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequest getRequestById(Long requestId, Long userId) {
-        userService.getUserById(userId);
+        userService.checkExistenceById(userId);
         ItemRequest itemRequest = itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException(String.format("Request with id %d not found", requestId)));
         List<Item> items = itemRepository.findAllByItemRequest(itemRequest);

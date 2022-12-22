@@ -8,8 +8,8 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Builder
 @Data
+@Builder
 public class ItemRequestDto {
     private Long id;
     @NotBlank

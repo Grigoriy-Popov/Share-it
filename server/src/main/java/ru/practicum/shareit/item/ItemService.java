@@ -8,7 +8,7 @@ public interface ItemService {
 
     ItemDto createItem(ItemDto itemDto, Long userId);
 
-    ItemDto getItemById(Long itemId, Long userId);
+    ItemDto getItemByIdByUser(Long itemId, Long userId);
 
     List<ItemDto> getAllUserItems(Long userId, Integer from, Integer size);
 
@@ -17,4 +17,5 @@ public interface ItemService {
     List<ItemDto> searchAvailableItemsByKeyword(String text, Integer from, Integer size);
 
     Comment addComment(Comment comment, Long userId, Long itemId);
+
 }

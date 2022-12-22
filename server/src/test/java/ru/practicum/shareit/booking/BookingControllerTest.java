@@ -98,7 +98,7 @@ public class BookingControllerTest {
 
     @Test
     void getBookingById() throws Exception {
-        when(bookingService.getBookingById(anyLong(), anyLong()))
+        when(bookingService.getBookingByIdByUser(anyLong(), anyLong()))
                 .thenReturn(booking);
 
         mvc.perform(get(BASE_PATH_BOOKINGS + "/1")

@@ -10,10 +10,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "requests")

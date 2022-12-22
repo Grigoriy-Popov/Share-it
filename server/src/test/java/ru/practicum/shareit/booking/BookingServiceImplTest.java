@@ -107,7 +107,7 @@ class BookingServiceImplTest {
     public void getBookingById_shouldThrowExceptionWhenBookingNotFound() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        Exception e = Assertions.assertThrows(NotFoundException.class, () -> bookingService.getBookingById(1L,
+        Exception e = Assertions.assertThrows(NotFoundException.class, () -> bookingService.getBookingByIdByUser(1L,
                 1L));
         assertThat(e.getMessage(), equalTo("Booking with id 1 not found"));
     }
@@ -116,7 +116,7 @@ class BookingServiceImplTest {
     public void getBookingById_shouldThrowExceptionWhenNotOwnerOrBookerTryToGetBooking() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
-        Exception e = Assertions.assertThrows(UserIsNotOwnerException.class, () -> bookingService.getBookingById(3L,
+        Exception e = Assertions.assertThrows(UserIsNotOwnerException.class, () -> bookingService.getBookingByIdByUser(3L,
                 1L));
         assertThat(e.getMessage(), equalTo("Only owner of the item or booker can view information about booking"));
     }

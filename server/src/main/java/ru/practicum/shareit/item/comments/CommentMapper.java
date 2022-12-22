@@ -1,10 +1,12 @@
 package ru.practicum.shareit.item.comments;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.ItemMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class CommentMapper {
 
     public static CommentDto toDto(Comment comment) {

@@ -111,7 +111,7 @@ public class ItemControllerTest {
 
     @Test
     void getItemById() throws Exception {
-        when(itemService.getItemById(anyLong(), anyLong()))
+        when(itemService.getItemByIdByUser(anyLong(), anyLong()))
                 .thenReturn(itemDto);
         mvc.perform(get(BASE_PATH_ITEMS + "/{id}", ITEM_FIRST_ID)
                         .header(USER_ID_HEADER, "1")
