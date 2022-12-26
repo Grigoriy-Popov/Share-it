@@ -16,6 +16,7 @@ import static ru.practicum.shareit.Constants.USER_ID_HEADER;
 @RequiredArgsConstructor
 @Validated
 public class ItemRequestController {
+
     private final ItemRequestClient itemRequestClient;
 
     @PostMapping

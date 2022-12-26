@@ -11,6 +11,7 @@ import ru.practicum.shareit.client.BaseClient;
 
 @Service
 public class UserClient extends BaseClient {
+
     private static final String API_PREFIX = "/users";
 
     @Autowired

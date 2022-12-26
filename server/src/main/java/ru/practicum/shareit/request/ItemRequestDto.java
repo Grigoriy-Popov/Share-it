@@ -11,9 +11,14 @@ import java.util.Set;
 @Data
 @Builder
 public class ItemRequestDto {
+
     private Long id;
+
     @NotBlank
     private String description;
+
     private LocalDateTime created;
+
     private Set<ItemDto> items;
+
 }

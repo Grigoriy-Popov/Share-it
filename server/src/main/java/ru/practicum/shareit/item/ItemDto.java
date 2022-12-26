@@ -12,15 +12,24 @@ import java.util.List;
 @Data
 @Builder
 public class ItemDto {
+
     private Long id;
+
     @NotBlank (message = "Name can't be empty")
     private String name;
+
     @NotBlank (message = "Description can't be empty")
     private String description;
+
     @NotNull
     private Boolean available;
+
     private Long requestId;
+
     private ForItemBookingDto lastBooking;
+
     private ForItemBookingDto nextBooking;
+
     private List<CommentDto> comments;
+
 }
