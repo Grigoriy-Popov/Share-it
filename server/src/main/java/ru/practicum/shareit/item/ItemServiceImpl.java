@@ -53,15 +53,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getAllUserItems(Long userId, Integer from, Integer size) {
+    public List<ItemDto> getAllUserItems(Long userId, int from, int size) {
         Pageable page = PageRequest.of(from / size, size);
         List<ItemDto> items = itemRepository.getAllByOwnerIdOrderById(userId, page).stream()
                 .peek(this::setLastAndNextBooking)
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
-        for (ItemDto itemDto : items) {
-            itemDto.setComments(CommentMapper.toDtoList(commentRepository.findAllByItemId(itemDto.getId())));
-        }
+        items.forEach(i -> i.setComments(CommentMapper.toDtoList(commentRepository.findAllByItemId(i.getId()))));
         return items;
     }
 
@@ -85,7 +83,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchAvailableItemsByKeyword(String text, Integer from, Integer size) {
+    public List<ItemDto> searchAvailableItemsByKeyword(String text, int from, int size) {
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
@@ -95,13 +93,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     // Сортировка и фильтрация происходит на стороне БД
-    private Item setLastAndNextBooking(Item item) {
+    private void setLastAndNextBooking(Item item) {
         var now = LocalDateTime.now();
         bookingRepository.getLastItemBooking(item.getId(), now)
                 .ifPresent(booking -> item.setLastBooking(BookingMapper.toItemBookingDto(booking)));
         bookingRepository.getNextItemBooking(item.getId(), now)
                 .ifPresent(booking -> item.setNextBooking(BookingMapper.toItemBookingDto(booking)));
-        return item;
     }
 
     @Override

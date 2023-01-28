@@ -15,7 +15,7 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequestDto createRequest(@RequestHeader(USER_ID_HEADER) Long requesterId,
-                                 @RequestBody ItemRequestDto itemRequestDto) {
+                                        @RequestBody ItemRequestDto itemRequestDto) {
         ItemRequest itemRequest = ItemRequestMapper.fromDto(itemRequestDto);
         return ItemRequestMapper.toDto(itemRequestService.createRequest(itemRequest, requesterId));
     }
@@ -33,8 +33,8 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestDto> getAllRequests(@RequestHeader(USER_ID_HEADER) Long userId,
-                                               @RequestParam(name = "from") Integer from,
-                                               @RequestParam(name = "size") Integer size) {
+                                               @RequestParam int from,
+                                               @RequestParam int size) {
         return ItemRequestMapper.toDtoList(itemRequestService.getAllRequests(userId, from, size));
     }
 }

@@ -18,7 +18,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto createItem(@RequestBody ItemDto itemDto,
-                           @RequestHeader(value = USER_ID_HEADER) Long userId) {
+                              @RequestHeader(value = USER_ID_HEADER) Long userId) {
         return itemService.createItem(itemDto, userId);
     }
 
@@ -30,8 +30,8 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getAllUserItems(@RequestHeader(USER_ID_HEADER) Long userId,
-            @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
-            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+            @RequestParam(required = false, defaultValue = "0") int from,
+            @RequestParam(required = false, defaultValue = "10") int size) {
         return itemService.getAllUserItems(userId, from, size);
     }
 
@@ -44,8 +44,8 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> searchAvailableItemsByKeyword(@RequestParam(defaultValue = "") String text,
-            @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
-            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+            @RequestParam(required = false, defaultValue = "0") int from,
+            @RequestParam(required = false, defaultValue = "10") int size) {
         return itemService.searchAvailableItemsByKeyword(text, from, size);
     }
 

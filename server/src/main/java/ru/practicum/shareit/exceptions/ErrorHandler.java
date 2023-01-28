@@ -13,6 +13,11 @@ import java.util.Map;
 public class ErrorHandler {
 
     @ExceptionHandler
+    public ResponseEntity<?> handleNotFound(final IncorrectDateException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<?> handleNotFound(final NotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }

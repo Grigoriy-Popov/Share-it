@@ -40,7 +40,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequest> getAllRequests(Long userId, Integer from, Integer size) {
+    public List<ItemRequest> getAllRequests(Long userId, int from, int size) {
         userService.checkExistenceById(userId);
         Pageable page = PageRequest.of(from / size, size, Sort.by("created"));
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequesterIdIsNot(userId, page).getContent();

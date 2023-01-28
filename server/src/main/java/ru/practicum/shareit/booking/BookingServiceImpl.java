@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.IncorrectDateException;
 import ru.practicum.shareit.exceptions.ItemIsBookedException;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.UserIsNotOwnerException;
@@ -33,6 +34,9 @@ public class BookingServiceImpl implements BookingService {
         if (item.getOwner().getId().equals(userId)) {
             throw new NotFoundException("Owner can't book his item");
         }
+        if (booking.getStart().isAfter(booking.getEnd())) {
+            throw new IncorrectDateException("Start can't be after end");
+        }
         booking.setBooker(user);
         booking.setItem(item);
         booking.setStatus(BookingStatus.WAITING);
@@ -55,15 +59,14 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking getBookingByIdByUser(Long userId, Long bookingId) {
         Booking booking = getBookingById(bookingId);
-        if (booking.getBooker().getId().equals(userId) || booking.getItem().getOwner().getId().equals(userId)) {
-            return booking;
-        } else {
+        if (!booking.getBooker().getId().equals(userId) && !booking.getItem().getOwner().getId().equals(userId)) {
             throw new UserIsNotOwnerException("Only owner of the item or booker can view information about booking");
         }
+        return booking;
     }
 
     @Override
-    public List<Booking> getAllUserBookings(Long userId, BookingState state, Integer from, Integer size) {
+    public List<Booking> getAllUserBookings(Long userId, BookingState state, int from, int size) {
         userService.checkExistenceById(userId);
         var now = LocalDateTime.now();
         Pageable page = PageRequest.of(from / size, size);
@@ -89,8 +92,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAllUserItemsBookings(Long userId, BookingState state, Integer from, Integer size) {
-        userService.getUserById(userId);
+    public List<Booking> getAllUserItemsBookings(Long userId, BookingState state, int from, int size) {
+        userService.checkExistenceById(userId);
         var now = LocalDateTime.now();
         Pageable page = PageRequest.of(from / size, size);
         switch (state) {
@@ -101,11 +104,11 @@ public class BookingServiceImpl implements BookingService {
             case PAST:
                 return bookingRepository.getPastUsersItemsBookings(userId, now, page);
             case FUTURE:
-                return bookingRepository.getFutureUsersItemsBookings(userId, now, BookingStatus.APPROVED, page);
+                return bookingRepository.getFutureUsersItemsBookings(userId, now, page);
             case WAITING:
-                return bookingRepository.getWaitingUsersItemsBookings(userId, now, BookingStatus.WAITING, page);
+                return bookingRepository.getWaitingUsersItemsBookings(userId, now, page);
             case REJECTED:
-                return bookingRepository.getRejectedUsersItemsBookings(userId, BookingStatus.REJECTED, page);
+                return bookingRepository.getRejectedUsersItemsBookings(userId, page);
             default:
                 throw new IllegalArgumentException("Unknown state");
         }

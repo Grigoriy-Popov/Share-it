@@ -10,8 +10,8 @@ public interface BookingService {
 
     Booking getBookingByIdByUser(Long userId, Long bookingId);
 
-    List<Booking> getAllUserBookings(Long userId, BookingState state, Integer from, Integer size);
+    List<Booking> getAllUserBookings(Long userId, BookingState state, int from, int size);
 
-    List<Booking> getAllUserItemsBookings(Long userId, BookingState state, Integer from, Integer size);
+    List<Booking> getAllUserItemsBookings(Long userId, BookingState state, int from, int size);
 
 }

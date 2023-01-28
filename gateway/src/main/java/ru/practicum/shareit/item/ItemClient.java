@@ -35,7 +35,7 @@ public class ItemClient extends BaseClient {
         return get("/" + itemId, userId);
     }
 
-    public ResponseEntity<Object> getAllUserItems(long userId, Integer from, Integer size) {
+    public ResponseEntity<Object> getAllUserItems(long userId, int from, int size) {
         Map<String, Object> parameters = Map.of(
                 "from", from,
                 "size", size
@@ -47,7 +47,7 @@ public class ItemClient extends BaseClient {
         return patch("/" + itemId, userId, itemDto);
     }
 
-    public ResponseEntity<Object> searchAvailableItemsByKeyword(String text, Integer from, Integer size) {
+    public ResponseEntity<Object> searchAvailableItemsByKeyword(String text, int from, int size) {
         Map<String, Object> parameters = Map.of(
                 "text", text,
                 "from", from,

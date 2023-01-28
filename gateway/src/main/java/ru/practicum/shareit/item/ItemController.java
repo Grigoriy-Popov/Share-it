@@ -24,41 +24,41 @@ public class ItemController {
 
     @PostMapping
     public Object createItem(@Valid @RequestBody ItemDto itemDto,
-                              @RequestHeader(value = USER_ID_HEADER) @NotNull Long userId) {
+                             @NotNull @RequestHeader(value = USER_ID_HEADER) Long userId) {
         return itemClient.createItem(userId, itemDto);
     }
 
     @GetMapping("/{itemId}")
     public Object getItemById(@PathVariable Long itemId,
-                               @RequestHeader(USER_ID_HEADER) Long userId) {
+                              @RequestHeader(USER_ID_HEADER) Long userId) {
         return itemClient.getItemById(userId, itemId);
     }
 
     @GetMapping
     public Object getAllUserItems(@RequestHeader(USER_ID_HEADER) Long userId,
-            @PositiveOrZero @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
-            @Positive @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+                                  @PositiveOrZero @RequestParam(required = false, defaultValue = "0") int from,
+                                  @Positive @RequestParam(required = false, defaultValue = "10") int size) {
         return itemClient.getAllUserItems(userId, from, size);
     }
 
     @PatchMapping("/{itemId}")
     public Object editItem(@RequestHeader(USER_ID_HEADER) Long userId,
-                            @PathVariable Long itemId,
-                            @RequestBody ItemDto itemDto) {
+                           @PathVariable Long itemId,
+                           @RequestBody ItemDto itemDto) {
         return itemClient.editItem(userId, itemId, itemDto);
     }
 
     @GetMapping("/search")
     public Object searchAvailableItemsByKeyword(@RequestParam(defaultValue = "") String text,
-            @PositiveOrZero @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
-            @Positive @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+            @PositiveOrZero @RequestParam(required = false, defaultValue = "0") int from,
+            @Positive @RequestParam(required = false, defaultValue = "10") int size) {
         return itemClient.searchAvailableItemsByKeyword(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
     public Object addComment(@Valid @RequestBody CommentDto commentDto,
-                                 @RequestHeader(value = USER_ID_HEADER) @NotNull Long userId,
-                                 @PathVariable Long itemId) {
+                             @RequestHeader(value = USER_ID_HEADER) @NotNull Long userId,
+                             @PathVariable Long itemId) {
         return itemClient.addComment(userId, itemId, commentDto);
     }
 }

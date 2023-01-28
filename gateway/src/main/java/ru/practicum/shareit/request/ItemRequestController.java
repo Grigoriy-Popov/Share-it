@@ -20,7 +20,7 @@ public class ItemRequestController {
 
     @PostMapping
     public Object createRequest(@RequestHeader(USER_ID_HEADER) @NotNull Long requesterId,
-                                        @RequestBody @Valid ItemRequestDto itemRequestDto) {
+                                @RequestBody @Valid ItemRequestDto itemRequestDto) {
         return itemRequestClient.createRequest(requesterId, itemRequestDto);
     }
 
@@ -31,14 +31,14 @@ public class ItemRequestController {
 
     @GetMapping("/{requestId}")
     public Object getRequestById(@RequestHeader(USER_ID_HEADER) @NotNull Long userId,
-                                         @PathVariable Long requestId) {
+                                 @PathVariable Long requestId) {
         return itemRequestClient.getRequestById(requestId, userId);
     }
 
     @GetMapping("/all")
     public Object getAllRequests(@RequestHeader(USER_ID_HEADER) @NotNull Long userId,
-            @PositiveOrZero @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
-            @Positive @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+                                 @PositiveOrZero @RequestParam(required = false, defaultValue = "0") int from,
+                                 @Positive @RequestParam(required = false, defaultValue = "10") int size) {
         return itemRequestClient.getAllRequests(userId, from, size);
     }
 }

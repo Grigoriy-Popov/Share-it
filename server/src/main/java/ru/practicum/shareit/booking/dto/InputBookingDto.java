@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 public class InputBookingDto {
     @FutureOrPresent
     private LocalDateTime start;
+
     @Future
     private LocalDateTime end;
+
     private Long itemId;
 }
