@@ -14,6 +14,7 @@ import static ru.practicum.shareit.Constants.USER_ID_HEADER;
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
+
     private final ItemService itemService;
 
     @PostMapping
@@ -30,8 +31,8 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getAllUserItems(@RequestHeader(USER_ID_HEADER) Long userId,
-            @RequestParam(required = false, defaultValue = "0") int from,
-            @RequestParam(required = false, defaultValue = "10") int size) {
+            @RequestParam(required = false, defaultValue = "0") Integer from,
+            @RequestParam(required = false, defaultValue = "10") Integer size) {
         return itemService.getAllUserItems(userId, from, size);
     }
 
@@ -39,13 +40,13 @@ public class ItemController {
     public ItemDto editItem(@RequestHeader(USER_ID_HEADER) Long userId,
                             @PathVariable Long itemId,
                             @RequestBody ItemDto itemDto) {
-            return itemService.editItem(itemDto, itemId, userId);
+        return itemService.editItem(itemDto, itemId, userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchAvailableItemsByKeyword(@RequestParam(defaultValue = "") String text,
-            @RequestParam(required = false, defaultValue = "0") int from,
-            @RequestParam(required = false, defaultValue = "10") int size) {
+                                                       @RequestParam(required = false, defaultValue = "0") Integer from,
+                                                       @RequestParam(required = false, defaultValue = "10") Integer size) {
         return itemService.searchAvailableItemsByKeyword(text, from, size);
     }
 
