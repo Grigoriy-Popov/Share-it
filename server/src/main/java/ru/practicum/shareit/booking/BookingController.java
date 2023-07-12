@@ -42,7 +42,7 @@ public class BookingController {
                                                      @RequestParam BookingState state,
                                                      @RequestParam int from,
                                                      @RequestParam int size) {
-        return BookingMapper.toOutputDtoList(bookingService.getAllUserBookings(userId, state, from, size));
+        return BookingMapper.toOutputDto(bookingService.getAllUserBookings(userId, state, from, size));
     }
 
     @GetMapping("/owner")
@@ -50,6 +50,6 @@ public class BookingController {
                                                           @RequestParam BookingState state,
                                                           @RequestParam int from,
                                                           @RequestParam int size) {
-        return BookingMapper.toOutputDtoList(bookingService.getAllUserItemsBookings(userId, state, from, size));
+        return BookingMapper.toOutputDto(bookingService.getAllUserItemsBookings(userId, state, from, size));
     }
 }

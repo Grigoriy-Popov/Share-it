@@ -12,7 +12,7 @@ public interface ItemService {
 
     List<ItemDto> getAllUserItems(Long userId, int from, int size);
 
-    ItemDto editItem(ItemDto itemDto, Long itemId, Long userId);
+    ItemDto editItem(ItemDto itemDtoToUpdate, Long itemId, Long userId);
 
     List<ItemDto> searchAvailableItemsByKeyword(String text, int from, int size);
 

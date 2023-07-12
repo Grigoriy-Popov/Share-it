@@ -24,7 +24,7 @@ public class UserController {
 
     @GetMapping
     public List<UserDto> getAllUsers() {
-        return UserMapper.toDtoList(userService.getAllUsers());
+        return UserMapper.toDto(userService.getAllUsers());
     }
 
     @PatchMapping("/{userId}")

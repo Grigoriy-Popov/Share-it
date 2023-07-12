@@ -17,7 +17,7 @@ public class ItemRequestMapper {
                 .description(itemRequest.getDescription())
                 .created(itemRequest.getCreated())
                 .items(itemRequest.getItems() != null ?
-                        new HashSet<>(ItemMapper.toDtoList(itemRequest.getItems())) : Collections.emptySet())
+                        new HashSet<>(ItemMapper.toDto(itemRequest.getItems())) : Collections.emptySet())
                 .build();
     }
 
@@ -28,7 +28,7 @@ public class ItemRequestMapper {
                 .build();
     }
 
-    public static List<ItemRequestDto> toDtoList(List<ItemRequest> requests) {
+    public static List<ItemRequestDto> toDto(List<ItemRequest> requests) {
         return requests.stream()
                 .map(ItemRequestMapper::toDto)
                 .collect(Collectors.toList());

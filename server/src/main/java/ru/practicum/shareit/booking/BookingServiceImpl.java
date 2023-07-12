@@ -25,7 +25,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking createBooking(Booking booking, Long userId, Long itemId) {
-        User user = userService.getUserById(userId);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with id %d not found", itemId)));
         if (!item.getAvailable()) {
@@ -37,6 +36,7 @@ public class BookingServiceImpl implements BookingService {
         if (booking.getStart().isAfter(booking.getEnd())) {
             throw new IncorrectDateException("Start can't be after end");
         }
+        User user = userService.getUserById(userId);
         booking.setBooker(user);
         booking.setItem(item);
         booking.setStatus(BookingStatus.WAITING);

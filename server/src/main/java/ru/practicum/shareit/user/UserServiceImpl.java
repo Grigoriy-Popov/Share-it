@@ -24,11 +24,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkExistenceById(Long userId) {
-        if (userRepository.existsById(userId)) {
-            return true;
-        } else {
+        if (!userRepository.existsById(userId)) {
             throw new NotFoundException(String.format("User with id %d not found", userId));
         }
+        return true;
     }
 
     @Override
@@ -37,14 +36,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User editUser(User updateUser, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", userId)));
-        if (updateUser.getName() != null) {
-            user.setName(updateUser.getName());
+    public User editUser(User userToUpdate, Long userId) {
+        User user = getUserById(userId);
+        if (userToUpdate.getName() != null) {
+            user.setName(userToUpdate.getName());
         }
-        if (updateUser.getEmail() != null) {
-            user.setEmail(updateUser.getEmail());
+        if (userToUpdate.getEmail() != null) {
+            user.setEmail(userToUpdate.getEmail());
         }
         return userRepository.save(user);
     }

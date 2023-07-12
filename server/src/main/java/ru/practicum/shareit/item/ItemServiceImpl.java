@@ -48,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
             setLastAndNextBooking(item);
         }
         ItemDto itemDto = ItemMapper.toDto(item);
-        itemDto.setComments(CommentMapper.toDtoList(commentRepository.findAllByItemId(item.getId())));
+        itemDto.setComments(CommentMapper.toDto(commentRepository.findAllByItemId(item.getId())));
         return itemDto;
     }
 
@@ -59,22 +59,22 @@ public class ItemServiceImpl implements ItemService {
                 .peek(this::setLastAndNextBooking)
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
-        items.forEach(i -> i.setComments(CommentMapper.toDtoList(commentRepository.findAllByItemId(i.getId()))));
+        items.forEach(i -> i.setComments(CommentMapper.toDto(commentRepository.findAllByItemId(i.getId()))));
         return items;
     }
 
     @Override
-    public ItemDto editItem(ItemDto itemDto, Long itemId, Long userId) {
+    public ItemDto editItem(ItemDto itemDtoToUpdate, Long itemId, Long userId) {
         Item item = getItemFromRepoById(itemId);
         if (item.getOwner().getId().equals(userId)) {
-            if (itemDto.getName() != null) {
-                item.setName(itemDto.getName());
+            if (itemDtoToUpdate.getName() != null) {
+                item.setName(itemDtoToUpdate.getName());
             }
-            if (itemDto.getDescription() != null) {
-                item.setDescription(itemDto.getDescription());
+            if (itemDtoToUpdate.getDescription() != null) {
+                item.setDescription(itemDtoToUpdate.getDescription());
             }
-            if (itemDto.getAvailable() != null) {
-                item.setAvailable(itemDto.getAvailable());
+            if (itemDtoToUpdate.getAvailable() != null) {
+                item.setAvailable(itemDtoToUpdate.getAvailable());
             }
             return ItemMapper.toDto(itemRepository.save(item));
         } else {
@@ -89,7 +89,7 @@ public class ItemServiceImpl implements ItemService {
         }
         Pageable page = PageRequest.of(from / size, size);
         List<Item> items = itemRepository.searchAvailableItemsByKeyword(text, page);
-        return ItemMapper.toDtoList(items);
+        return ItemMapper.toDto(items);
     }
 
     // Сортировка и фильтрация происходит на стороне БД

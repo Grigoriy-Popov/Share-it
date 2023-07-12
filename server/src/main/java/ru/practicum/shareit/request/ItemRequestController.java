@@ -22,7 +22,7 @@ public class ItemRequestController {
 
     @GetMapping
     public List<ItemRequestDto> getAllUserRequests(@RequestHeader(USER_ID_HEADER) Long requesterId) {
-        return ItemRequestMapper.toDtoList(itemRequestService.getAllUserRequests(requesterId));
+        return ItemRequestMapper.toDto(itemRequestService.getAllUserRequests(requesterId));
     }
 
     @GetMapping("/{requestId}")
@@ -35,6 +35,6 @@ public class ItemRequestController {
     public List<ItemRequestDto> getAllRequests(@RequestHeader(USER_ID_HEADER) Long userId,
                                                @RequestParam int from,
                                                @RequestParam int size) {
-        return ItemRequestMapper.toDtoList(itemRequestService.getAllRequests(userId, from, size));
+        return ItemRequestMapper.toDto(itemRequestService.getAllRequests(userId, from, size));
     }
 }
